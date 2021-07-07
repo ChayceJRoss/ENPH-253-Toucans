@@ -21,6 +21,7 @@ void check_state()
         case STORE_CAN:
         // can grabbed -> store can in reservoir
         // need memory for which reservoir slot to use? -> use global variable or something
+        // TODO: Brian
             break;
 
         case ALIGN:
