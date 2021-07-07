@@ -1,6 +1,6 @@
 #include "constants.h"
 #include "fsm.h"
-
+//hi
 void init_pins() {
   pinMode(CLAW_SERVO, OUTPUT);
   pinMode(ARM_SERVO, OUTPUT);
