@@ -1,5 +1,46 @@
 #include "fsm.h"
 
+void drive()
+{
+    // PID code here
+}
+
+bool search()
+{
+    drive();
+    // start flapper
+    pwm_start(FLAPPER_MOTOR, MOTOR_FREQ, DC_FREQ, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD)
+    {
+        // shut off flapper
+        pwm_start(FLAPPER_MOTOR, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+
+        // stop wheels
+        pwm_start(LEFT_WHEEL_A, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_B, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_A, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_B, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        delay(50);
+        
+        return true;
+    }
+    return false;
+}
+
+bool grab_can()
+{ 
+    // close claw
+    pwm_start(CLAW_SERVO, MOTOR_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    delay(50);
+
+    // check reflectance -> or change this to a switch reading
+    if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD)
+    {
+        return true;
+    }
+    return false;
+}
+
 void check_state() 
 {
     static enum {INITIALIZE, SEARCH, GRAB_CAN, STORE_CAN, ALIGN, DROPOFF} state = INITIALIZE;
@@ -12,10 +53,18 @@ void check_state()
             break;
         case SEARCH:
         // has initialized, stored a can, or completed drop-off -> follow tape, flapper on
+            if (search())
+            {
+                state = GRAB_CAN;
+            }
             break;
 
         case GRAB_CAN:
-        // can has been sensed -> flapper off, stop driving, grab can
+        // can has been sensed -> grab can
+            if (grab_can())
+            {
+                state = STORE_CAN;
+            }
             break;
 
         case STORE_CAN:
