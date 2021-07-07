@@ -1,3 +1,5 @@
+#pragma once
+
 // bluepill pin assignment
 #define CLAW_SERVO PB_7
 #define ARM_SERVO PB_9
