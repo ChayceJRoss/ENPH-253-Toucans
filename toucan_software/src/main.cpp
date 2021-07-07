@@ -1,6 +1,5 @@
-#include <Arduino.h>
-#include <Wire.h>
 #include "constants.h"
+#include "fsm.h"
 
 void init_pins() {
   pinMode(CLAW_SERVO, OUTPUT);
