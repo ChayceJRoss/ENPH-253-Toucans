@@ -1,5 +1,29 @@
 #include "fsm.h"
 
+bool grab_can()
+{
+    // shut off flapper
+    pwm_start(FLAPPER_MOTOR, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+
+    // stop wheels
+    pwm_start(LEFT_WHEEL_A, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    pwm_start(LEFT_WHEEL_B, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    pwm_start(RIGHT_WHEEL_A, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    pwm_start(RIGHT_WHEEL_B, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    delay(50);
+  
+    // close claw
+    pwm_start(CLAW_SERVO, MOTOR_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    delay(50);
+
+    // check reflectance
+    if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD)
+    {
+        return true;
+    }
+    return false;
+}
+
 void check_state() 
 {
     static enum {INITIALIZE, SEARCH, GRAB_CAN, STORE_CAN, ALIGN, DROPOFF} state = INITIALIZE;
@@ -16,6 +40,10 @@ void check_state()
 
         case GRAB_CAN:
         // can has been sensed -> flapper off, stop driving, grab can
+            if (grab_can())
+            {
+                state = STORE_CAN;
+            }
             break;
 
         case STORE_CAN:
