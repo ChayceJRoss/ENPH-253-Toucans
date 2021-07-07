@@ -16,7 +16,7 @@ bool grab_can()
     pwm_start(CLAW_SERVO, MOTOR_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     delay(50);
 
-    // check reflectance
+    // check reflectance -> or change this to a switch reading
     if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD)
     {
         return true;
