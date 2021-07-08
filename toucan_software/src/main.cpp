@@ -1,7 +1,8 @@
 #include "constants.h"
 #include "fsm.h"
 
-void init_pins() {
+void init_pins()
+{
   pinMode(CLAW_SERVO, OUTPUT);
   pinMode(ARM_SERVO, OUTPUT);
   pinMode(SWIVEL_SERVO, OUTPUT);
@@ -16,7 +17,8 @@ void init_pins() {
   pinMode(FLAPPER_MOTOR, OUTPUT);
 }
 
-void init_claw() {
+void init_claw()
+{
   pwm_start(SWIVEL_SERVO, MOTOR_FREQ, SWIVEL_ORIGIN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
   delay(500);
   pwm_start(CLAW_SERVO, MOTOR_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
@@ -27,14 +29,16 @@ void init_claw() {
   delay(500);
 }
 
-void setup() {
+void setup()
+{
   // put your setup code here, to run once:
   // skycrane sequence?
   init_pins();
   init_claw();
 }
 
-void loop() {
+void loop()
+{
   // put your main code here, to run repeatedly:
   check_state();
 }
