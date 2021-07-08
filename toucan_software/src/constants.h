@@ -1,6 +1,4 @@
 #pragma once
-#include <Adafruit_SSD1306.h>
-
 // bluepill pin assignment
 #define CLAW_SERVO PA_8
 #define ARM_SERVO PA_9
@@ -41,4 +39,3 @@ const int TIME_TO_GRAB_CAN_THRESHOLD = 500;
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 #define OLED_RESET 	-1 // This display does not have a reset pin accessible
-

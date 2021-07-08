@@ -1,24 +1,25 @@
 #pragma once
 #include <Arduino.h>
 #include <Wire.h>
+#include <Adafruit_SSD1306.h>
 #include "constants.h"
 
-/** Drives the robot. Contains PID code
- */
+// PID control of the robot
 void drive();
 
-/** searches the floor for cans
- *  returns true if a can has been sensed in front of the claw, false otherwise
- */
+// Moves the robot by following the black tape and actively checks for cans
 bool search();
 
-/** grabs a can
- *  returns true if the can was grabbed, false otherwise
- */
+// Grabs the can using the claw
 bool grab_can();
 
-/** checks the state of the FSM and executes the state
- */
+// Claw and arm sequence to drop can into reservoir
+bool store_can();
+
+// Resets claw position
+void reset_claw();
+
+// checks the state of the FSM and executes the state
 void check_state();
 
 extern Adafruit_SSD1306 display;
