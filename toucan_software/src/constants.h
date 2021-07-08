@@ -1,5 +1,4 @@
 #pragma once
-
 // bluepill pin assignment
 #define CLAW_SERVO PB_7
 #define ARM_SERVO PB_9
@@ -33,3 +32,5 @@ const int ARM_DOWN = 500;
 const int ARM_UP = 1500;
 const int SWIVEL_ORIGIN = 2500;
 const int RESERVOIR_POSITIONS[3] = {1000, 1300, 1600};
+
+const int CAN_SENSING_THRESHOLD = 100;
