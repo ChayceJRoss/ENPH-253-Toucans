@@ -1,6 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include <Wire.h>
+#include <Adafruit_SSD1306.h>
 #include "constants.h"
 
 // PID control of the robot
@@ -20,3 +21,5 @@ void reset_claw();
 
 // checks the state of the FSM and executes the state
 void check_state();
+
+extern Adafruit_SSD1306 display;

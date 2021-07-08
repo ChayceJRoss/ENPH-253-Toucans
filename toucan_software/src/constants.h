@@ -1,10 +1,9 @@
 #pragma once
 // bluepill pin assignment
-#define CLAW_SERVO PB_7
-#define ARM_SERVO PB_9
-#define SWIVEL_SERVO PB_8
+#define CLAW_SERVO PA_8
+#define ARM_SERVO PA_9
+#define SWIVEL_SERVO PA_10
 
-#define CLAW_SWITCH PB11
 #define CLAW_SENSOR PA7
 
 #define LEFT_TAPE_SENSOR PB0
@@ -34,3 +33,9 @@ const int SWIVEL_ORIGIN = 2500;
 const int RESERVOIR_POSITIONS[3] = {1000, 1300, 1600};
 
 const int CAN_SENSING_THRESHOLD = 100;
+const int TIME_TO_GRAB_CAN_THRESHOLD = 500;
+
+// display set-up
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+#define OLED_RESET 	-1 // This display does not have a reset pin accessible
