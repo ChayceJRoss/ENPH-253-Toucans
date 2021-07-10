@@ -16,11 +16,7 @@ void init_pins()
   pinMode(CLAW_SERVO, OUTPUT);
   pinMode(ARM_SERVO, OUTPUT);
   pinMode(SWIVEL_SERVO, OUTPUT);
-<<<<<<< HEAD
   // pinMode(CLAW_SENSOR, INPUT);
-=======
-  pinMode(CLAW_SENSOR, INPUT);
->>>>>>> 7c76f99e183708737199653bfcb97b67735432ca
   pinMode(LEFT_TAPE_SENSOR, INPUT);
   pinMode(RIGHT_TAPE_SENSOR, INPUT);
   pinMode(P_POT, INPUT);
@@ -39,10 +35,6 @@ void setup()
   // skycrane sequence?
   set_up_display();
   init_pins();
-<<<<<<< HEAD
-=======
-  // init_claw();
->>>>>>> 7c76f99e183708737199653bfcb97b67735432ca
 }
 
 void loop()

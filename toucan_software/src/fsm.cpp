@@ -31,7 +31,6 @@ bool search()
     drive();
     // start flapper
     pwm_start(FLAPPER_MOTOR, MOTOR_FREQ, DC_FREQ, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-<<<<<<< HEAD
     // bool can_sensed = false;
     // if(analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD){
     //     if (init_time_sensed == 0)
@@ -59,41 +58,12 @@ bool search()
         
     //     return true;
     // }
-=======
-    bool can_sensed = false;
-    if(analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD){
-        if (init_time_sensed == 0)
-        {
-            init_time_sensed = millis();
-        }
-        can_sensed = true;
-    }
-    else
-    {
-        init_time_sensed = 0;
-        can_sensed = false;
-    }
-    if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD && can_sensed && (millis() - init_time_sensed > TIME_TO_GRAB_CAN_THRESHOLD))
-    {
-        // shut off flapper
-        pwm_start(FLAPPER_MOTOR, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-
-        // stop wheels
-        pwm_start(LEFT_WHEEL_A, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_A, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        
-        return true;
-    }
->>>>>>> 7c76f99e183708737199653bfcb97b67735432ca
     return false;
 }
 
 bool grab_can()
 { 
     // close claw
-<<<<<<< HEAD
     // pwm_start(CLAW_SERVO, MOTOR_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     // delay(200);
 
@@ -102,15 +72,6 @@ bool grab_can()
     // {
     //     return true;
     // }
-=======
-    pwm_start(CLAW_SERVO, MOTOR_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-
-    // check reflectance -> or change this to a switch reading
-    if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD)
-    {
-        return true;
-    }
->>>>>>> 7c76f99e183708737199653bfcb97b67735432ca
     return false;
 }
 
@@ -213,20 +174,13 @@ void check_state()
     display.println("state: ");
     display.println(state);
     display.println("reflectance: ");
-<<<<<<< HEAD
     // display.println(analogRead(CLAW_SENSOR));
-=======
-    display.println(analogRead(CLAW_SENSOR));
->>>>>>> 7c76f99e183708737199653bfcb97b67735432ca
 
     switch (state)
     {
     case INITIALIZE:
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
-<<<<<<< HEAD
           reset_claw();
-=======
->>>>>>> 7c76f99e183708737199653bfcb97b67735432ca
             break;
     case SEARCH:
         // has initialized, stored a can, or completed drop-off -> follow tape, flapper on
