@@ -144,7 +144,6 @@ void check_state()
     {
     case INITIALIZE:
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
-
         state = SEARCH;
 
         break;
