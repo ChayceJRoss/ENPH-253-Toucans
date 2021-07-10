@@ -14,16 +14,16 @@ void set_up_display() {
 void init_pins()
 {
   pinMode(CLAW_SERVO, OUTPUT);
-  // pinMode(ARM_SERVO, OUTPUT);
-  // pinMode(SWIVEL_SERVO, OUTPUT);
+  pinMode(ARM_SERVO, OUTPUT);
+  pinMode(SWIVEL_SERVO, OUTPUT);
   pinMode(CLAW_SENSOR, INPUT);
-  // pinMode(LEFT_TAPE_SENSOR, INPUT);
-  // pinMode(RIGHT_TAPE_SENSOR, INPUT);
-  // pinMode(LEFT_WHEEL_A, OUTPUT);
-  // pinMode(LEFT_WHEEL_B, OUTPUT);
-  // pinMode(RIGHT_WHEEL_A, OUTPUT);
-  // pinMode(RIGHT_WHEEL_B, OUTPUT);
-  // pinMode(FLAPPER_MOTOR, OUTPUT);
+  pinMode(LEFT_TAPE_SENSOR, INPUT);
+  pinMode(RIGHT_TAPE_SENSOR, INPUT);
+  pinMode(LEFT_WHEEL_A, OUTPUT);
+  pinMode(LEFT_WHEEL_B, OUTPUT);
+  pinMode(RIGHT_WHEEL_A, OUTPUT);
+  pinMode(RIGHT_WHEEL_B, OUTPUT);
+  pinMode(FLAPPER_MOTOR, OUTPUT);
 }
 
 void init_claw()
