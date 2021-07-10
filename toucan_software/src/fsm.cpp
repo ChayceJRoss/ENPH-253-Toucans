@@ -17,8 +17,8 @@ void turn_wheels(int g)
     pwm_start(MOTOR_B, MOTOR_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
     pwm_start(MOTOR_A, MOTOR_FREQ, g / 100, RESOLUTION_12B_COMPARE_FORMAT);
 
-    pe
-  }
+    pwm
+    }
   else if (error > 0)
   {
     pwm_start(MOTOR_A, MOTOR_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
