@@ -7,12 +7,27 @@ volatile int reservoir_state = 0;
 void drive()
 {
     // PID code here
+
+}
+
+void turn_wheels(int g)
+{
+  if (error < 0)
+  {
+    pwm_start(MOTOR_B, MOTOR_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+    pwm_start(MOTOR_A, MOTOR_FREQ, g / 100, RESOLUTION_12B_COMPARE_FORMAT);
+
+    pe
+  }
+  else if (error > 0)
+  {
+    pwm_start(MOTOR_A, MOTOR_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+    pwm_start(MOTOR_B, MOTOR_FREQ, g, RESOLUTION_12B_COMPARE_FORMAT);
+  }
 }
 
 bool search()
 {
-    delay(2000);
-    return true;
     drive();
     // start flapper
     pwm_start(FLAPPER_MOTOR, MOTOR_FREQ, DC_FREQ, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
@@ -39,7 +54,6 @@ bool search()
         pwm_start(LEFT_WHEEL_B, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         pwm_start(RIGHT_WHEEL_A, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         pwm_start(RIGHT_WHEEL_B, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        // delay(50);
         
         return true;
     }
@@ -50,9 +64,6 @@ bool grab_can()
 { 
     // close claw
     pwm_start(CLAW_SERVO, MOTOR_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(200);
-    pwm_start(CLAW_SERVO, MOTOR_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(200);
 
     // check reflectance -> or change this to a switch reading
     if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD)
@@ -166,8 +177,6 @@ void check_state()
     {
     case INITIALIZE:
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
-            delay(2000);
-            state = SEARCH;
             break;
     case SEARCH:
         // has initialized, stored a can, or completed drop-off -> follow tape, flapper on
