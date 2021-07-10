@@ -3,11 +3,16 @@
 #define CLAW_SERVO PA_8
 #define ARM_SERVO PA_9
 #define SWIVEL_SERVO PA_10
-
-#define CLAW_SENSOR PA7
+#define RESERVOIR_SERVO PB_8
 
 #define LEFT_TAPE_SENSOR PB0
 #define RIGHT_TAPE_SENSOR PB1
+// #define FRONT_DROPOFF_SENSOR PA4
+// #define BACK_DROPOFF_SENSOR PA5
+// #define CLAW_SENSOR PA7
+#define P_POT PA4
+#define D_POT PA5
+#define I_POT PA7
 
 // A = forward, B = backward
 #define LEFT_WHEEL_A PA_0
@@ -15,10 +20,9 @@
 #define RIGHT_WHEEL_A PA_2
 #define RIGHT_WHEEL_B PA_3
 
-#define FRONT_DROPOFF_SENSOR PA4
-#define BACK_DROPOFF_SENSOR PA5
-
 #define FLAPPER_MOTOR PA_6
+
+// Adafruit Display: PB6, PB7
 
 const int MOTOR_FREQ = 50;
 const int DC_FREQ = 1000;
