@@ -7,23 +7,21 @@ volatile int reservoir_state = 0;
 void drive()
 {
     // PID code here
-
 }
 
 void turn_wheels(int g)
 {
-  if (error < 0)
-  {
-    pwm_start(MOTOR_B, MOTOR_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-    pwm_start(MOTOR_A, MOTOR_FREQ, g / 100, RESOLUTION_12B_COMPARE_FORMAT);
+    if (error < 0)
+    {
+        pwm_start(MOTOR_B, MOTOR_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(MOTOR_A, MOTOR_FREQ, g / 100, RESOLUTION_12B_COMPARE_FORMAT);
 
-    pwm
     }
-  else if (error > 0)
-  {
-    pwm_start(MOTOR_A, MOTOR_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-    pwm_start(MOTOR_B, MOTOR_FREQ, g, RESOLUTION_12B_COMPARE_FORMAT);
-  }
+    else if (error > 0)
+    {
+        pwm_start(MOTOR_A, MOTOR_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(MOTOR_B, MOTOR_FREQ, g, RESOLUTION_12B_COMPARE_FORMAT);
+    }
 }
 
 bool search()
@@ -32,7 +30,8 @@ bool search()
     // start flapper
     pwm_start(FLAPPER_MOTOR, MOTOR_FREQ, DC_FREQ, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     bool can_sensed = false;
-    if(analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD){
+    if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD)
+    {
         if (init_time_sensed == 0)
         {
             init_time_sensed = millis();
@@ -54,14 +53,14 @@ bool search()
         pwm_start(LEFT_WHEEL_B, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         pwm_start(RIGHT_WHEEL_A, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         pwm_start(RIGHT_WHEEL_B, MOTOR_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        
+
         return true;
     }
     return false;
 }
 
 bool grab_can()
-{ 
+{
     // close claw
     pwm_start(CLAW_SERVO, MOTOR_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
@@ -177,7 +176,7 @@ void check_state()
     {
     case INITIALIZE:
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
-            break;
+        break;
     case SEARCH:
         // has initialized, stored a can, or completed drop-off -> follow tape, flapper on
         if (search())
@@ -187,7 +186,7 @@ void check_state()
         break;
 
     case GRAB_CAN:
-    // can has been sensed -> grab can
+        // can has been sensed -> grab can
         if (grab_can())
         {
             state = STORE_CAN;
