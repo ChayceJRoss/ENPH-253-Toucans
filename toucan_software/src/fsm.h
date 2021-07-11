@@ -4,6 +4,9 @@
 #include <Adafruit_SSD1306.h>
 #include "constants.h"
 
+// adjusting the wheels for PID
+void turn_wheels(int g);
+
 // PID control of the robot
 void drive();
 
