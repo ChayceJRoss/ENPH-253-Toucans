@@ -1,21 +1,23 @@
 #include "constants.h"
 #include "fsm.h"
 
-void set_up_display() {
-    // setting up the display
+void set_up_display()
+{
+  // setting up the display
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0,0);
+  display.setCursor(0, 0);
   display.display();
 }
 
 void init_pins()
 {
-  pinMode(CLAW_SERVO, OUTPUT);
-  pinMode(ARM_SERVO, OUTPUT);
-  pinMode(SWIVEL_SERVO, OUTPUT);
+  // pinMode(CLAW_SERVO, OUTPUT);
+  // pinMode(ARM_SERVO, OUTPUT);
+  // pinMode(SWIVEL_SERVO, OUTPUT);
   // pinMode(CLAW_SENSOR, INPUT);
   pinMode(LEFT_TAPE_SENSOR, INPUT);
   pinMode(RIGHT_TAPE_SENSOR, INPUT);
@@ -33,17 +35,12 @@ void setup()
 {
   // put your setup code here, to run once:
   // skycrane sequence?
-  set_up_display();
   init_pins();
+  set_up_display();
 }
 
 void loop()
 {
   // put your main code here, to run repeatedly:
-  display.clearDisplay();
-  display.setCursor(0,0);
-
   check_state();
-
-  display.display();
 }
