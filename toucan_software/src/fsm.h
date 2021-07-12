@@ -22,7 +22,13 @@ bool store_can();
 // Resets claw position
 void reset_claw();
 
+// Aligns the robot to the return vehicle
+bool align();
+
 // checks the state of the FSM and executes the state
 void check_state();
+
+// changes state to ALIGN once front dropoff sensor is triggered
+void handle_interrupt();
 
 extern Adafruit_SSD1306 display;

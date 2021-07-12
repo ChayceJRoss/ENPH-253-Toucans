@@ -4,6 +4,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 volatile int init_time_sensed = 0;
 volatile int reservoir_state = 0;
 
+volatile bool at_dropoff = false;
 volatile int reflectance;
 
 volatile int p = 0;
@@ -264,6 +265,13 @@ void reset_claw()
     delay(500);
 }
 
+bool align()
+{
+    // check that the robot is in line with the return vehicle, i.e. the back sensor has been triggered
+    // check that the robot is close enough, i.e. front and back sensors are reading values within the desired range
+    
+}
+
 void check_state()
 {
     static enum { INITIALIZE,
@@ -289,7 +297,11 @@ void check_state()
         break;
     case SEARCH:
         // has initialized, stored a can, or completed drop-off -> follow tape, flapper on
-        if (search())
+        if (at_dropoff)
+        {
+            state = ALIGN;
+        }
+        else if (search())
         {
             state = GRAB_CAN;
         }
@@ -311,6 +323,10 @@ void check_state()
 
     case ALIGN:
         // reached return vehicle -> stop flapper, change driving somehow, line up next to it
+        if(align())
+        {
+            state = DROPOFF;
+        }
         break;
 
     case DROPOFF:
@@ -324,4 +340,9 @@ void check_state()
         break;
     }
     display.display();
+}
+
+void handle_interrupt()
+{
+    at_dropoff = true;
 }
