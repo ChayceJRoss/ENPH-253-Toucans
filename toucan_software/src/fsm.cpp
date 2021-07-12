@@ -278,7 +278,10 @@ bool align()
 {
     // check that the robot is in line with the return vehicle, i.e. the back sensor has been triggered
     // check that the robot is close enough, i.e. front and back sensors are reading values within the desired range
-    
+    // drive slowly, reading front sensor - if we can get good PID then maybe we don't need this to be constantly reading
+    // if front sensor too far away, turn wheels to the right
+    // if front sensor too close, turn wheels to the left
+    // another interrupt for BACK_DROPOFF_SENSOR, if interrupt triggered AND front sensor within desired range, then state = DROPOFF
 }
 
 void check_state()
