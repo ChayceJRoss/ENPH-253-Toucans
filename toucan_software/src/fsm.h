@@ -4,6 +4,9 @@
 #include <Adafruit_SSD1306.h>
 #include "constants.h"
 
+// Display relevant PID values on LCD screen
+void display_values();
+
 // adjusting the wheels for PID
 void turn_wheels(int g);
 
