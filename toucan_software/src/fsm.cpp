@@ -149,34 +149,34 @@ bool search()
         drive(CRUISING_SPEED);
     
         // start flapper
-        pwm_start(FLAPPER_MOTOR, SERVO_FREQ, DC_FREQ, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
-        bool can_sensed = false;
-        if(analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD){
-            if (init_time_sensed == 0)
-            {
-                init_time_sensed = millis();
-            }
-            can_sensed = true;
-        }
-        else
-        {
-            init_time_sensed = 0;
-            can_sensed = false;
-        }
-        if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD && can_sensed && (millis() - init_time_sensed > TIME_TO_GRAB_CAN_THRESHOLD))
-        {
-            // shut off flapper
-            pwm_start(FLAPPER_MOTOR, DC_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        // pwm_start(FLAPPER_MOTOR, SERVO_FREQ, DC_FREQ, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+        // bool can_sensed = false;
+        // if(analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD){
+        //     if (init_time_sensed == 0)
+        //     {
+        //         init_time_sensed = millis();
+        //     }
+        //     can_sensed = true;
+        // }
+        // else
+        // {
+        //     init_time_sensed = 0;
+        //     can_sensed = false;
+        // }
+        // if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD && can_sensed && (millis() - init_time_sensed > TIME_TO_GRAB_CAN_THRESHOLD))
+        // {
+        //     // shut off flapper
+        //     pwm_start(FLAPPER_MOTOR, DC_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
-            // stop wheels
-            pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
-            pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
-            pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
-            pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
-            // delay(50);
+        //     // stop wheels
+        //     pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+        //     pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+        //     pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+        //     pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+        //     // delay(50);
 
-        return true;
-        }
+        // return true;
+        // }
     }
     return false;
 }
@@ -322,10 +322,11 @@ void check_state()
     {
     case INITIALIZE:
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
-        if (reset_claw())
-        {
-            state = SEARCH;
-        }
+        // if (reset_claw())
+        // {
+        //     state = SEARCH;
+        // }
+        state = SEARCH;
         break;
     case SEARCH:
         // has initialized, stored a can, or completed drop-off -> follow tape, flapper on
@@ -376,5 +377,5 @@ void check_state()
 
 void handle_interrupt()
 {
-    at_dropoff = true;
+    // at_dropoff = true;
 }
