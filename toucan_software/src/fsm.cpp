@@ -13,6 +13,10 @@ volatile int i = 0;
 volatile int g = 0;
 volatile int error = 0;
 volatile int lasterror = 0;
+volatile int delta = 0;
+volatile int m = 1; // Amount of times looping in previous state
+volatile int n = 0; // Amount of times looping in current state
+volatile int init_time = 0;
 
 enum Robot_Position
 {
@@ -43,56 +47,57 @@ void display_values(int left_input, int right_input)
 }
 
 // Param g less or equal to Cruising speed
-void turn_wheels(int g)
+void turn_wheels(int g, int speed)
 {
     if (error == 0)
     {
-        pwm_start(LEFT_WHEEL_A, SERVO_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_A, DC_FREQ, speed, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
-        pwm_start(RIGHT_WHEEL_A, SERVO_FREQ, CRUISING_SPEED * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_A, DC_FREQ, speed * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
     }
     else if (error < 0)
     {
-        pwm_start(LEFT_WHEEL_A, SERVO_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_A, DC_FREQ, speed + g, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
-        pwm_start(RIGHT_WHEEL_A, SERVO_FREQ, (CRUISING_SPEED - g) * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_A, DC_FREQ, (speed - g) * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
     }
     else if (error > 0)
     {
-        pwm_start(LEFT_WHEEL_A, SERVO_FREQ, CRUISING_SPEED - g, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_A, DC_FREQ, speed - g, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
-        pwm_start(RIGHT_WHEEL_A, SERVO_FREQ, CRUISING_SPEED * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_A, DC_FREQ, (speed + g) * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
     }
 }
 
-void drive()
+void drive(int speed)
 {
     int left_reading = analogRead(LEFT_TAPE_SENSOR);
+
     int right_reading = analogRead(RIGHT_TAPE_SENSOR);
 
-    int kp = analogRead(P_POT) / 10;
-    int kd = analogRead(D_POT) / 10;
-    int ki = analogRead(I_POT) / 10;
+    int kp = analogRead(P_POT) * 10;
+    int kd = analogRead(D_POT) * 10;
+    int ki = analogRead(I_POT) * 10;
 
-    // Finds error based on inputs from sensors
+    //Finds error based on inputs from sensors
     if (left_reading > BW_THRES && right_reading > BW_THRES)
     {
         error = 0;
     }
     else if (left_reading < BW_THRES && right_reading > BW_THRES)
     {
-        error = -1;
+        error = -2;
         prev_pos = LEFT;
     }
     else if (left_reading > BW_THRES && right_reading < BW_THRES)
     {
-        error = 1;
+        error = 2;
         prev_pos = RIGHT;
     }
     else if (left_reading < BW_THRES && right_reading < BW_THRES)
@@ -108,38 +113,46 @@ void drive()
     }
 
     p = kp * error;
-    d = kd * (error - lasterror);
-    i = ki * error + i;
+    d = kd * delta / (m + n);
+    // i = ki * error + i;
+    i = 0;
 
-    if (i > MAX_INTEGRATOR_VALUE)
-    {
-        i = MAX_INTEGRATOR_VALUE;
-    }
-    else if (i < MAX_INTEGRATOR_VALUE)
-    {
-        i = MAX_INTEGRATOR_VALUE;
-    }
+    // if (i > MAX_INTEGRATOR_VALUE)
+    // {
+    //     i = MAX_INTEGRATOR_VALUE;
+    // }
+    // else if (i < MAX_INTEGRATOR_VALUE)
+    // {
+    //     i = MAX_INTEGRATOR_VALUE;
+    // }
 
     g = p + i + d;
     if (g < 0)
     {
         g = g * -1;
     }
-    if (g > CRUISING_SPEED)
+    if (g > speed)
     {
-        g = CRUISING_SPEED;
+        g = speed;
     }
-    turn_wheels(g);
+    turn_wheels(g, speed);
     lasterror = error;
+    if(error != lasterror){
+        delta = error - lasterror;
+        init_time = millis();
+        m = n;
+        n = 0;
+    } else {
+        n = millis() - init_time;
+    }
 
     display_values(left_reading, right_reading);
 
-    delay(100);
 }
 
 bool search()
 {
-    drive();
+    drive(CRUISING_SPEED);
     // start flapper
     // pwm_start(FLAPPER_MOTOR, SERVO_FREQ, DC_FREQ, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     // bool can_sensed = false;
@@ -337,7 +350,7 @@ void check_state()
 
     case ALIGN:
         // reached return vehicle -> stop flapper, change driving somehow, line up next to it
-        if(align())
+        if (align())
         {
             state = DROPOFF;
         }

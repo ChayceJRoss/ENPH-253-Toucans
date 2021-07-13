@@ -8,10 +8,10 @@
 void display_values();
 
 // adjusting the wheels for PID
-void turn_wheels(int g);
+void turn_wheels(int g, int speed);
 
 // PID control of the robot
-void drive();
+void drive(int speed);
 
 // Moves the robot by following the black tape and actively checks for cans
 bool search();
