@@ -11,7 +11,7 @@ void display_values();
 void turn_wheels(int g);
 
 // PID control of the robot
-void drive();
+void drive(int speed);
 
 // Moves the robot by following the black tape and actively checks for cans
 bool search();
@@ -23,10 +23,10 @@ bool grab_can();
 bool store_can();
 
 // Resets claw position
-void reset_claw();
+bool reset_claw();
 
 // Aligns the robot to the return vehicle
-bool align();
+bool stop_drop_roll();
 
 // checks the state of the FSM and executes the state
 void check_state();

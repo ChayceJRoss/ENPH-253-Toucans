@@ -47,31 +47,31 @@ void turn_wheels(int g)
 {
     if (error == 0)
     {
-        pwm_start(LEFT_WHEEL_A, SERVO_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
-        pwm_start(RIGHT_WHEEL_A, SERVO_FREQ, CRUISING_SPEED * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_A, DC_FREQ, CRUISING_SPEED * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
     }
     else if (error < 0)
     {
-        pwm_start(LEFT_WHEEL_A, SERVO_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
-        pwm_start(RIGHT_WHEEL_A, SERVO_FREQ, (CRUISING_SPEED - g) * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_A, DC_FREQ, (CRUISING_SPEED - g) * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
     }
     else if (error > 0)
     {
-        pwm_start(LEFT_WHEEL_A, SERVO_FREQ, CRUISING_SPEED - g, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_A, DC_FREQ, CRUISING_SPEED - g, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
-        pwm_start(RIGHT_WHEEL_A, SERVO_FREQ, CRUISING_SPEED * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_A, DC_FREQ, CRUISING_SPEED * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
     }
 }
 
-void drive()
+void drive(int speed)
 {
     int left_reading = analogRead(LEFT_TAPE_SENSOR);
     int right_reading = analogRead(RIGHT_TAPE_SENSOR);
@@ -139,153 +139,170 @@ void drive()
 
 bool search()
 {
-    drive();
-    // start flapper
-    // pwm_start(FLAPPER_MOTOR, SERVO_FREQ, DC_FREQ, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    // bool can_sensed = false;
-    // if(analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD){
-    //     if (init_time_sensed == 0)
-    //     {
-    //         init_time_sensed = millis();
-    //     }
-    //     can_sensed = true;
-    // }
-    // else
-    // {
-    //     init_time_sensed = 0;
-    //     can_sensed = false;
-    // }
-    // if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD && can_sensed && (millis() - init_time_sensed > TIME_TO_GRAB_CAN_THRESHOLD))
-    // {
-    //     // shut off flapper
-    //     pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    if (at_dropoff)
+    {
+        pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+        return true;
+    }
+    else 
+    {
+        drive(CRUISING_SPEED);
+    
+        // start flapper
+        pwm_start(FLAPPER_MOTOR, SERVO_FREQ, DC_FREQ, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+        bool can_sensed = false;
+        if(analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD){
+            if (init_time_sensed == 0)
+            {
+                init_time_sensed = millis();
+            }
+            can_sensed = true;
+        }
+        else
+        {
+            init_time_sensed = 0;
+            can_sensed = false;
+        }
+        if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD && can_sensed && (millis() - init_time_sensed > TIME_TO_GRAB_CAN_THRESHOLD))
+        {
+            // shut off flapper
+            pwm_start(FLAPPER_MOTOR, DC_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
-    //     // stop wheels
-    //     pwm_start(LEFT_WHEEL_A, SERVO_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    //     pwm_start(LEFT_WHEEL_B, SERVO_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    //     pwm_start(RIGHT_WHEEL_A, SERVO_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    //     pwm_start(RIGHT_WHEEL_B, SERVO_FREQ, 0, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    //     // delay(50);
+            // stop wheels
+            pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+            pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+            // delay(50);
 
-    //     return true;
-    // }
+        return true;
+        }
+    }
     return false;
 }
 
 bool grab_can()
 {
     // close claw
-    // pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    // delay(200);
+    pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    delay(200);
 
-    // // check reflectance -> or change this to a switch reading
-    // if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD)
-    // {
-    //     return true;
-    // }
+    // check reflectance -> or change this to a switch reading
+    if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD)
+    {
+        return true;
+    }
     return false;
 }
 
 bool store_can()
 {
-    // if (analogRead(CLAW_SENSOR) > CAN_SENSING_THRESHOLD)
-    // {
-    //     reset_claw();
-    //     return false;
-    // }
-    // delay(1000);
+    if (analogRead(CLAW_SENSOR) > CAN_SENSING_THRESHOLD)
+    {
+        reset_claw();
+        return false;
+    }
+    delay(1000);
 
-    // for (int i = ARM_DOWN; i < ARM_UP; i += 25)
-    // {
-    //     pwm_start(ARM_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    //     delay(15);
-    // }
+    for (int i = ARM_DOWN; i < ARM_UP; i += 25)
+    {
+        pwm_start(ARM_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        delay(15);
+    }
 
-    // if (analogRead(CLAW_SENSOR) > CAN_SENSING_THRESHOLD)
-    // {
-    //     reset_claw();
-    //     return false;
-    // }
-    // delay(1000);
+    if (analogRead(CLAW_SENSOR) > CAN_SENSING_THRESHOLD)
+    {
+        reset_claw();
+        return false;
+    }
+    delay(1000);
 
-    // for (int i = SWIVEL_ORIGIN; i > RESERVOIR_POSITIONS[reservoir_state]; i -= 50)
-    // {
-    //     pwm_start(SWIVEL_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    //     delay(30);
-    // }
+    for (int i = SWIVEL_ORIGIN; i > RESERVOIR_POSITIONS[reservoir_state]; i -= 50)
+    {
+        pwm_start(SWIVEL_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        delay(30);
+    }
 
-    // if (analogRead(CLAW_SENSOR) > CAN_SENSING_THRESHOLD)
-    // {
-    //     reset_claw();
-    //     return false;
-    // }
-    // delay(1000);
+    if (analogRead(CLAW_SENSOR) > CAN_SENSING_THRESHOLD)
+    {
+        reset_claw();
+        return false;
+    }
+    delay(1000);
 
-    // pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
-    // delay(1000);
+    delay(1000);
 
-    // for (int i = RESERVOIR_POSITIONS[reservoir_state]; i < SWIVEL_ORIGIN; i += 50)
-    // {
-    //     pwm_start(SWIVEL_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    //     delay(30);
-    // }
+    for (int i = RESERVOIR_POSITIONS[reservoir_state]; i < SWIVEL_ORIGIN; i += 50)
+    {
+        pwm_start(SWIVEL_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        delay(30);
+    }
 
-    // delay(1000);
+    delay(1000);
 
-    // pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
-    // delay(1000);
+    delay(1000);
 
-    // for (int i = ARM_UP; i > ARM_DOWN; i -= 25)
-    // {
-    //     pwm_start(ARM_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    //     delay(15);
-    // }
+    for (int i = ARM_UP; i > ARM_DOWN; i -= 25)
+    {
+        pwm_start(ARM_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        delay(15);
+    }
 
-    // delay(1000);
+    delay(1000);
 
-    // pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
-    // delay(1000);
+    delay(1000);
 
-    // if (reservoir_state < 2)
-    // {
-    //     reservoir_state++;
-    // }
-    // else
-    // {
-    //     reservoir_state = 0;
-    // }
-
+    if (reservoir_state < 2)
+    {
+        reservoir_state++;
+    }
+    else
+    {
+        reservoir_state = 0;
+    }
     return true;
 }
 
-void reset_claw()
+bool reset_claw()
 {
     pwm_start(SWIVEL_SERVO, SERVO_FREQ, SWIVEL_ORIGIN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(500);
+    delay(200);
     // Done: changed to partially closed
     pwm_start(CLAW_SERVO, SERVO_FREQ, (CLAW_CLOSE + CLAW_OPEN) / 2, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(500);
+    delay(200);
     pwm_start(ARM_SERVO, SERVO_FREQ, ARM_DOWN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(500);
+    delay(200);
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(500);
+    delay(200);
+    return true;
 }
 
-bool align()
+bool stop_drop_roll()
 {
-    // check that the robot is in line with the return vehicle, i.e. the back sensor has been triggered
-    // check that the robot is close enough, i.e. front and back sensors are reading values within the desired range
-    //
-    // drive slowly, reading front sensor - if we can get good PID then maybe we don't need this to be constantly reading
-    // if front sensor too far away, turn wheels to the right
-    // if front sensor too close, turn wheels to the left
-    // poll for value for BACK_DROPOFF_SENSOR, if sensed AND front sensor within desired range:
-    //      stop driving
-    //      state = DROPOFF
-    // else, back up (?) and try again
+    // check that the robot is in line with the return vehicle, i.e. the front sensor has just left
+    // the tape that is along the side of the return vehicle
+    drive(DROPOFF_SPEED);
+    if (digitalRead(FRONT_DROPOFF_SENSOR) == 0)
+    {
+        // stop wheels
+        pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
+        delay(50);
+        pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        delay(1000);
+
+        pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        return true;
+    }
+    return false;
 }
 
 void check_state()
@@ -294,8 +311,7 @@ void check_state()
                   SEARCH,
                   GRAB_CAN,
                   STORE_CAN,
-                  ALIGN,
-                  DROPOFF } state = INITIALIZE;
+                  STOP_DROP_ROLL } state = INITIALIZE;
     display.clearDisplay();
     display.setCursor(0, 0);
     display.setTextColor(SSD1306_WHITE);
@@ -306,18 +322,23 @@ void check_state()
     {
     case INITIALIZE:
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
-        // reset_claw();
-        state = SEARCH;
+        if (reset_claw())
+        {
+            state = SEARCH;
+        }
         break;
     case SEARCH:
         // has initialized, stored a can, or completed drop-off -> follow tape, flapper on
-        if (at_dropoff)
+        if (search())
         {
-            state = ALIGN;
-        }
-        else if (search())
-        {
-            state = GRAB_CAN;
+            if (at_dropoff)
+            {
+                state = STOP_DROP_ROLL;
+            }
+            else 
+            {
+                state = GRAB_CAN;
+            }
         }
         break;
 
@@ -331,22 +352,19 @@ void check_state()
 
     case STORE_CAN:
         // store can -> search
-        store_can();
-        state = SEARCH;
-        break;
-
-    case ALIGN:
-        // reached return vehicle -> stop flapper, change driving somehow, line up next to it
-        if(align())
+        if (store_can())
         {
-            state = DROPOFF;
+            state = SEARCH;
         }
         break;
 
-    case DROPOFF:
+    case STOP_DROP_ROLL:
         // has aligned to the return vehicle
-        // if no servo -> drive forwards slowly to drop cans, sense when the robot has reached the end of the return vehicle
-        // if servo -> open the reservoir
+        // drive forwards slowly to drop cans, sense when the robot has reached the end of the return vehicle
+        if (stop_drop_roll())
+        {
+            state = SEARCH;
+        }
         break;
 
     default:

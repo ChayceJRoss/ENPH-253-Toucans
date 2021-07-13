@@ -15,12 +15,11 @@ void set_up_display()
 
 void init_pins()
 {
-  // pinMode(CLAW_SERVO, OUTPUT);
-  // pinMode(ARM_SERVO, OUTPUT);
-  // pinMode(SWIVEL_SERVO, OUTPUT);
-  // pinMode(CLAW_SENSOR, INPUT);
+  pinMode(CLAW_SERVO, OUTPUT);
+  pinMode(ARM_SERVO, OUTPUT);
+  pinMode(SWIVEL_SERVO, OUTPUT);
+  pinMode(CLAW_SENSOR, INPUT);
   pinMode(FRONT_DROPOFF_SENSOR, INPUT);
-  // pinMode(BACK_DROPOFF_SENSOR, INPUT);
   attachInterrupt(digitalPinToInterrupt(FRONT_DROPOFF_SENSOR), handle_interrupt, RISING);
   pinMode(LEFT_TAPE_SENSOR, INPUT);
   pinMode(RIGHT_TAPE_SENSOR, INPUT);
