@@ -38,7 +38,7 @@ const int ARM_DOWN = 500;
 const int ARM_UP = 1500;
 const int SWIVEL_ORIGIN = 2500;
 const int RESERVOIR_POSITIONS[3] = {1000, 1300, 1600};
-const int RESERVOIR_OPEN = 1500;
+const int RESERVOIR_OPEN = 1000;
 const int RESERVOIR_CLOSE = 500;
 
 const int CAN_SENSING_THRESHOLD = 100;
