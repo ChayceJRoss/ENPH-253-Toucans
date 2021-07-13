@@ -5,21 +5,20 @@
 #define SWIVEL_SERVO PA_10
 #define RESERVOIR_SERVO PB_8
 
-#define LEFT_TAPE_SENSOR PB1
-#define RIGHT_TAPE_SENSOR PB0
-// #define FRONT_DROPOFF_SENSOR PA4
-// #define BACK_DROPOFF_SENSOR PA5
-// #define CLAW_SENSOR PA7
+#define LEFT_TAPE_SENSOR PB0
+#define RIGHT_TAPE_SENSOR PB1
+#define FRONT_DROPOFF_SENSOR PB10
+#define CLAW_SENSOR PA7
 #define P_POT PA4
 #define D_POT PA5
-#define I_POT PA7
+#define I_POT PA6
 
 // A = forward, B = backward
 #define LEFT_WHEEL_A PA_0
 #define LEFT_WHEEL_B PA_1
 #define RIGHT_WHEEL_A PA_2
 #define RIGHT_WHEEL_B PA_3
-#define FLAPPER_MOTOR PA_6
+#define FLAPPER_MOTOR PB_9
 
 const double RW_ADJUSTMENT_FACTOR = 0.8;
 const int MAX_INTEGRATOR_VALUE = 4000;
@@ -39,6 +38,8 @@ const int ARM_DOWN = 500;
 const int ARM_UP = 1500;
 const int SWIVEL_ORIGIN = 2500;
 const int RESERVOIR_POSITIONS[3] = {1000, 1300, 1600};
+const int RESERVOIR_OPEN = 1000;
+const int RESERVOIR_CLOSE = 500;
 
 const int CAN_SENSING_THRESHOLD = 100;
 const int TIME_TO_GRAB_CAN_THRESHOLD = 500;
