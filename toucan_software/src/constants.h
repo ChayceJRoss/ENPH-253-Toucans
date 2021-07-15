@@ -29,6 +29,7 @@ const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
 const int CRUISING_SPEED = 2150;
 const int DROPOFF_SPEED = 1000;
+const int FLAPPER_SPEED = 750; 
 
 // Servo Position
 // MIN 500, MAX 2500
