@@ -164,6 +164,9 @@ bool search()
     
         // start flapper
         pwm_start(FLAPPER_MOTOR, SERVO_FREQ, FLAPPER_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
+
+        pwm_start(LEFT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
+
         bool can_sensed = false;
         // if(analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD){
         //     if (init_time_sensed == 0)
@@ -235,7 +238,7 @@ bool store_can()
     for (int i = SWIVEL_ORIGIN; i > RESERVOIR_POSITIONS[reservoir_state]; i -= 50)
     {
         pwm_start(SWIVEL_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        delay(30);
+        delay(15);
     }
 
     // if (analogRead(CLAW_SENSOR) > CAN_SENSING_THRESHOLD)
@@ -252,7 +255,7 @@ bool store_can()
     for (int i = RESERVOIR_POSITIONS[reservoir_state]; i < SWIVEL_ORIGIN; i += 50)
     {
         pwm_start(SWIVEL_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        delay(30);
+        delay(15);
     }
 
     delay(1000);
@@ -274,6 +277,13 @@ bool store_can()
     delay(1000);
 
     num++;
+    if (num % 3 == 0)
+    {
+        pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        delay(1000);
+        pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        delay(1000);
+    }
     reservoir_state = num % 3;
 
     // if (reservoir_state < 2)

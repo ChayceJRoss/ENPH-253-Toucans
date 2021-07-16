@@ -33,7 +33,8 @@ const int FLAPPER_SPEED = 750;
 
 // Servo Position
 // MIN 500, MAX 2500
-const int CLAW_CLOSE = 700;
+// blake - 700, brian - 720, tara = 750
+const int CLAW_CLOSE = 750;
 const int CLAW_OPEN = 1050;
 const int ARM_DOWN = 500;
 const int ARM_UP = 1500;
