@@ -126,15 +126,15 @@ void drive(int speed)
     p = kp * error;
     d = kd * delta / (m + n);
     // i = ki * error + i;
-    i = 0;
+    //i = 0;
 
     // if (i > MAX_INTEGRATOR_VALUE)
     // {
     //     i = MAX_INTEGRATOR_VALUE;
     // }
-    // else if (i < MAX_INTEGRATOR_VALUE)
+    // else if (i < -MAX_INTEGRATOR_VALUE)
     // {
-    //     i = MAX_INTEGRATOR_VALUE;
+    //     i = -MAX_INTEGRATOR_VALUE;
     // }
 
     g = p + i + d;
