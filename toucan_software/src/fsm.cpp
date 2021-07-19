@@ -37,11 +37,11 @@ void display_values(int left_input, int right_input)
     display.print("Speed: ");
     display.println(robot_speed);
     display.print("P: ");
-    display.println(analogRead(P_POT) * 10);
+    display.println(analogRead(P_POT));
     // display.print("I: ");
     // display.println(analogRead(I_POT) * 10);
     display.print("D: ");
-    display.println(analogRead(D_POT) * 10);
+    display.println(analogRead(D_POT));
     display.print("m: ");
     display.print(m);
     display.print(" n: ");
@@ -91,10 +91,10 @@ void drive(int speed)
 
     int right_reading = analogRead(RIGHT_TAPE_SENSOR);
 
-    int kp = analogRead(P_POT) * 10;
-    int kd = analogRead(D_POT) * 10;
+    int kp = analogRead(P_POT)*10;
+    int kd = analogRead(D_POT)*10;
     //int ki = analogRead(I_POT) * 10;
-    robot_speed = analogRead(I_POT) * 50;
+    robot_speed = analogRead(I_POT) * 5;
 
     //Finds error based on inputs from sensors
     if (left_reading > BW_THRES && right_reading > BW_THRES)
