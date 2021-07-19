@@ -166,6 +166,9 @@ bool search()
         pwm_start(FLAPPER_MOTOR, SERVO_FREQ, FLAPPER_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
 
         pwm_start(LEFT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
         bool can_sensed = false;
         // if(analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD){
@@ -182,14 +185,15 @@ bool search()
         // }
         if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD) // && can_sensed && (millis() - init_time_sensed > TIME_TO_GRAB_CAN_THRESHOLD))
         {
+            pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
             // shut off flapper
-            // pwm_start(FLAPPER_MOTOR, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
             // stop wheels
-            // pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-            // pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-            // pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-            // pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             // delay(50);
 
         return true;
@@ -201,8 +205,8 @@ bool search()
 bool grab_can()
 {
     // close claw
-    pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(1000);
+    // pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    // delay(1000);
     return true;
 
     // check reflectance
@@ -294,6 +298,7 @@ bool store_can()
     // {
     //     reservoir_state = 0;
     // }
+    delay(10000);
     return true;
 }
 
@@ -308,6 +313,7 @@ bool reset_claw()
     delay(200);
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     delay(200);
+    pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     return true;
 }
 
@@ -352,6 +358,7 @@ void check_state()
     {
     case INITIALIZE:
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
+        delay(10000);
         if (reset_claw())
         {
             state = SEARCH;
