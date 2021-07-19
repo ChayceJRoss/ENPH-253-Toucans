@@ -16,9 +16,6 @@ void drive(int speed);
 // Moves the robot by following the black tape and actively checks for cans
 bool search();
 
-// Grabs the can using the claw
-bool grab_can();
-
 // Claw and arm sequence to drop can into reservoir
 bool store_can();
 

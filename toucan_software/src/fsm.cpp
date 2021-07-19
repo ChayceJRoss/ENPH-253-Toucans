@@ -172,15 +172,15 @@ bool search()
     }
     else 
     {
-        // drive(CRUISING_SPEED);
+        drive(CRUISING_SPEED);
     
         // start flapper
         pwm_start(FLAPPER_MOTOR, SERVO_FREQ, FLAPPER_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
 
-        pwm_start(LEFT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        // pwm_start(LEFT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
+        // pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        // pwm_start(RIGHT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
+        // pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
         bool can_sensed = false;
         // if(analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD){
@@ -212,21 +212,6 @@ bool search()
         }
     }
     return false;
-}
-
-bool grab_can()
-{
-    // close claw
-    // pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    // delay(1000);
-    return true;
-
-    // check reflectance
-    // if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD)
-    // {
-    //     return true;
-    // }
-    // return false;
 }
 
 bool store_can()
@@ -354,16 +339,15 @@ void check_state()
 {
     static enum { INITIALIZE,
                   SEARCH,
-                  GRAB_CAN,
                   STORE_CAN,
                   STOP_DROP_ROLL } state = INITIALIZE;
-    // display.clearDisplay();
-    // display.setCursor(0, 0);
-    // display.setTextColor(SSD1306_WHITE);
-    // display.print("state: ");
-    // display.println(state);
-    // display.println(analogRead(CLAW_SENSOR));
-    // display.println(reservoir_state);
+    display.clearDisplay();
+    display.setCursor(0, 0);
+    display.setTextColor(SSD1306_WHITE);
+    display.print("state: ");
+    display.println(state);
+    display.println(analogRead(CLAW_SENSOR));
+    display.println(reservoir_state);
 
     switch (state)
     {
@@ -385,20 +369,8 @@ void check_state()
             }
             else 
             {
-                state = GRAB_CAN;
+                state = STORE_CAN;
             }
-        }
-        break;
-
-    case GRAB_CAN:
-        // can has been sensed -> grab can
-        if (grab_can())
-        {
-            state = STORE_CAN;
-        }
-        else 
-        {
-            state = SEARCH;
         }
         break;
 
@@ -423,7 +395,7 @@ void check_state()
         state = INITIALIZE;
         break;
     }
-    // display.display();
+    display.display();
 }
 
 void handle_interrupt()
