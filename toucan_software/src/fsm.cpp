@@ -14,9 +14,11 @@ volatile int g = 0;
 volatile int error = 0;
 volatile int lasterror = 0;
 volatile int delta = 0;
-volatile int m = 1; // Amount of times looping in previous state
-volatile int n = 0; // Amount of times looping in current state
+volatile int m = 1; // Elapsed time in previous state
+volatile int n = 0; // Elapsed time in current state
 volatile int init_time = 0;
+
+volatile int robot_speed;
 
 enum Robot_Position
 {
@@ -28,19 +30,27 @@ Robot_Position prev_pos = LEFT;
 // display relevant PID values on LCD screen
 void display_values(int left_input, int right_input)
 {
-    display.print("Left: ");
-    display.println(left_input);
-    display.print("Right: ");
+    display.print("L: ");
+    display.print(left_input);
+    display.print(" R: ");
     display.println(right_input);
+    display.print("Speed: ");
+    display.println(robot_speed);
     display.print("P: ");
     display.println(analogRead(P_POT));
-    display.print("I: ");
-    display.println(analogRead(I_POT));
+    // display.print("I: ");
+    // display.println(analogRead(I_POT) * 10);
     display.print("D: ");
     display.println(analogRead(D_POT));
+    display.print("m: ");
+    display.print(m);
+    display.print(" n: ");
+    display.print(n);
+    display.print(" delta: ");
+    display.println(delta);
     display.print("G: ");
     display.println(g);
-    display.print("Error: ");
+    display.print("Err: ");
     display.print(error);
     display.print("  Pos: ");
     display.println(prev_pos);
@@ -81,9 +91,10 @@ void drive(int speed)
 
     int right_reading = analogRead(RIGHT_TAPE_SENSOR);
 
-    int kp = analogRead(P_POT) * 10;
-    int kd = analogRead(D_POT) * 10;
-    int ki = analogRead(I_POT) * 10;
+    int kp = analogRead(P_POT)*10;
+    int kd = analogRead(D_POT)*10;
+    //int ki = analogRead(I_POT) * 10;
+    robot_speed = analogRead(I_POT) * 5;
 
     //Finds error based on inputs from sensors
     if (left_reading > BW_THRES && right_reading > BW_THRES)
@@ -115,15 +126,15 @@ void drive(int speed)
     p = kp * error;
     d = kd * delta / (m + n);
     // i = ki * error + i;
-    i = 0;
+    //i = 0;
 
     // if (i > MAX_INTEGRATOR_VALUE)
     // {
     //     i = MAX_INTEGRATOR_VALUE;
     // }
-    // else if (i < MAX_INTEGRATOR_VALUE)
+    // else if (i < -MAX_INTEGRATOR_VALUE)
     // {
-    //     i = MAX_INTEGRATOR_VALUE;
+    //     i = -MAX_INTEGRATOR_VALUE;
     // }
 
     g = p + i + d;
@@ -135,16 +146,17 @@ void drive(int speed)
     {
         g = speed;
     }
-    turn_wheels(g, speed);
-    lasterror = error;
+    turn_wheels(g, robot_speed);
+    
     if(error != lasterror){
         delta = error - lasterror;
         init_time = millis();
         m = n;
         n = 0;
     } else {
-        n = millis() - init_time;
+        n = (millis() - init_time) / 100;
     }
+    lasterror = error;
 
     display_values(left_reading, right_reading);
 

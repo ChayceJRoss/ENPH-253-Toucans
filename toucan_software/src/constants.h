@@ -20,14 +20,14 @@
 #define RIGHT_WHEEL_B PA_3
 #define FLAPPER_MOTOR PB_9
 
-const double RW_ADJUSTMENT_FACTOR = 0.8;
-const int MAX_INTEGRATOR_VALUE = 4000;
+const double RW_ADJUSTMENT_FACTOR = 1.0;
+const int MAX_INTEGRATOR_VALUE = 100;
 
 // Adafruit Display: PB6, PB7
 
 const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
-const int CRUISING_SPEED = 2150;
+const int CRUISING_SPEED = 1600;
 const int DROPOFF_SPEED = 1000;
 
 // Servo Position
