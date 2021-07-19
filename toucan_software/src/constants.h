@@ -29,12 +29,12 @@ const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
 const int CRUISING_SPEED = 2150;
 const int DROPOFF_SPEED = 1000;
-const int FLAPPER_SPEED = 750; 
+const int FLAPPER_SPEED = 900; 
 
 // Servo Position
 // MIN 500, MAX 2500
 // blake - 700, brian - 720, tara = 750
-const int CLAW_CLOSE = 750;
+const int CLAW_CLOSE = 720;
 const int CLAW_OPEN = 1050;
 const int ARM_DOWN = 500;
 const int ARM_UP = 1500;
@@ -43,7 +43,7 @@ const int RESERVOIR_POSITIONS[3] = {1000, 1300, 1600};
 const int RESERVOIR_OPEN = 1000;
 const int RESERVOIR_CLOSE = 500;
 
-const int CAN_SENSING_THRESHOLD = 100;
+const int CAN_SENSING_THRESHOLD = 200;
 const int TIME_TO_GRAB_CAN_THRESHOLD = 500;
 const int BW_THRES = 100; // Black > 100, White < 100 approx
 // const int GREY1_2 = 2;
