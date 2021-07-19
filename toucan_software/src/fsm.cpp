@@ -337,11 +337,7 @@ void check_state()
                   GRAB_CAN,
                   STORE_CAN,
                   STOP_DROP_ROLL } state = INITIALIZE;
-    display.clearDisplay();
-    display.setCursor(0, 0);
-    display.setTextColor(SSD1306_WHITE);
-    display.print("state: ");
-    display.println(state);
+    
 
     switch (state)
     {
