@@ -206,7 +206,6 @@ bool search()
             pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-            // delay(50);
 
         return true;
         }
@@ -221,7 +220,7 @@ bool store_can()
     //     reset_claw();
     //     return false;
     // }
-    // delay(1000);
+    delay(1000);
 
     for (int i = ARM_DOWN; i < ARM_UP; i += 25)
     {
@@ -270,11 +269,11 @@ bool store_can()
         delay(15);
     }
 
-    delay(1000);
+    delay(500);
 
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
-    delay(1000);
+    delay(500);
 
     num++;
     if (num % 3 == 0)
@@ -294,7 +293,7 @@ bool store_can()
     // {
     //     reservoir_state = 0;
     // }
-    delay(10000);
+    delay(1000);
     return true;
 }
 
@@ -304,7 +303,7 @@ bool reset_claw()
     delay(1000);
     // Done: changed to partially closed
     pwm_start(CLAW_SERVO, SERVO_FREQ, (CLAW_CLOSE + CLAW_OPEN) / 2, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(200);
+    delay(1000);
     pwm_start(ARM_SERVO, SERVO_FREQ, ARM_DOWN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     delay(200);
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
@@ -346,14 +345,12 @@ void check_state()
     display.setTextColor(SSD1306_WHITE);
     display.print("state: ");
     display.println(state);
-    display.println(analogRead(CLAW_SENSOR));
-    display.println(reservoir_state);
 
     switch (state)
     {
     case INITIALIZE:
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
-        delay(10000);
+        // delay(1000);
         if (reset_claw())
         {
             state = SEARCH;
