@@ -14,10 +14,12 @@ volatile int g = 0;
 volatile int error = 0;
 volatile int lasterror = 0;
 volatile int delta = 0;
-volatile int m = 1; // Amount of times looping in previous state
-volatile int n = 0; // Amount of times looping in current state
+volatile int m = 1; // Elapsed time in previous state
+volatile int n = 0; // Elapsed time in current state
 volatile int init_time = 0;
 volatile int num = 0;
+
+volatile int robot_speed;
 
 enum Robot_Position
 {
@@ -29,19 +31,27 @@ Robot_Position prev_pos = LEFT;
 // display relevant PID values on LCD screen
 void display_values(int left_input, int right_input)
 {
-    display.print("Left: ");
-    display.println(left_input);
-    display.print("Right: ");
+    display.print("L: ");
+    display.print(left_input);
+    display.print(" R: ");
     display.println(right_input);
+    display.print("Speed: ");
+    display.println(robot_speed);
     display.print("P: ");
     display.println(analogRead(P_POT));
-    display.print("I: ");
-    display.println(analogRead(I_POT));
+    // display.print("I: ");
+    // display.println(analogRead(I_POT) * 10);
     display.print("D: ");
     display.println(analogRead(D_POT));
+    display.print("m: ");
+    display.print(m);
+    display.print(" n: ");
+    display.print(n);
+    display.print(" delta: ");
+    display.println(delta);
     display.print("G: ");
     display.println(g);
-    display.print("Error: ");
+    display.print("Err: ");
     display.print(error);
     display.print("  Pos: ");
     display.println(prev_pos);
@@ -82,9 +92,10 @@ void drive(int speed)
 
     int right_reading = analogRead(RIGHT_TAPE_SENSOR);
 
-    int kp = analogRead(P_POT) * 10;
-    int kd = analogRead(D_POT) * 10;
-    int ki = analogRead(I_POT) * 10;
+    int kp = analogRead(P_POT)*10;
+    int kd = analogRead(D_POT)*10;
+    //int ki = analogRead(I_POT) * 10;
+    robot_speed = analogRead(I_POT) * 5;
 
     //Finds error based on inputs from sensors
     if (left_reading > BW_THRES && right_reading > BW_THRES)
@@ -116,15 +127,15 @@ void drive(int speed)
     p = kp * error;
     d = kd * delta / (m + n);
     // i = ki * error + i;
-    i = 0;
+    //i = 0;
 
     // if (i > MAX_INTEGRATOR_VALUE)
     // {
     //     i = MAX_INTEGRATOR_VALUE;
     // }
-    // else if (i < MAX_INTEGRATOR_VALUE)
+    // else if (i < -MAX_INTEGRATOR_VALUE)
     // {
-    //     i = MAX_INTEGRATOR_VALUE;
+    //     i = -MAX_INTEGRATOR_VALUE;
     // }
 
     g = p + i + d;
@@ -136,16 +147,17 @@ void drive(int speed)
     {
         g = speed;
     }
-    turn_wheels(g, speed);
-    lasterror = error;
+    turn_wheels(g, robot_speed);
+    
     if(error != lasterror){
         delta = error - lasterror;
         init_time = millis();
         m = n;
         n = 0;
     } else {
-        n = millis() - init_time;
+        n = (millis() - init_time) / 100;
     }
+    lasterror = error;
 
     display_values(left_reading, right_reading);
 
@@ -160,15 +172,15 @@ bool search()
     }
     else 
     {
-        // drive(CRUISING_SPEED);
+        drive(CRUISING_SPEED);
     
         // start flapper
         pwm_start(FLAPPER_MOTOR, SERVO_FREQ, FLAPPER_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
 
-        pwm_start(LEFT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        // pwm_start(LEFT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
+        // pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        // pwm_start(RIGHT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
+        // pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
         bool can_sensed = false;
         // if(analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD){
@@ -195,27 +207,11 @@ bool search()
             pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-            // delay(50);
 
         return true;
         }
     }
     return false;
-}
-
-bool grab_can()
-{
-    // close claw
-    // pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    // delay(1000);
-    return true;
-
-    // check reflectance
-    // if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD)
-    // {
-    //     return true;
-    // }
-    // return false;
 }
 
 bool store_can()
@@ -225,8 +221,8 @@ bool store_can()
     //     reset_claw();
     //     return false;
     // }
-    delay(500);
-
+    
+    delay(1000);
     for (int i = ARM_DOWN; i < ARM_UP; i += 25)
     {
         pwm_start(ARM_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
@@ -274,11 +270,11 @@ bool store_can()
         delay(15);
     }
 
-    delay(1000);
+    delay(500);
 
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
-    delay(1000);
+    delay(500);
 
     num++;
     if (num % 3 == 0)
@@ -298,7 +294,7 @@ bool store_can()
     // {
     //     reservoir_state = 0;
     // }
-    delay(10000);
+    delay(1000);
     return true;
 }
 
@@ -343,22 +339,19 @@ void check_state()
 {
     static enum { INITIALIZE,
                   SEARCH,
-                  GRAB_CAN,
                   STORE_CAN,
                   STOP_DROP_ROLL } state = INITIALIZE;
-    // display.clearDisplay();
-    // display.setCursor(0, 0);
-    // display.setTextColor(SSD1306_WHITE);
-    // display.print("state: ");
-    // display.println(state);
-    // display.println(analogRead(CLAW_SENSOR));
-    // display.println(reservoir_state);
+    display.clearDisplay();
+    display.setCursor(0, 0);
+    display.setTextColor(SSD1306_WHITE);
+    display.print("state: ");
+    display.println(state);
 
     switch (state)
     {
     case INITIALIZE:
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
-        delay(10000);
+        // delay(1000);
         if (reset_claw())
         {
             state = SEARCH;
@@ -374,20 +367,8 @@ void check_state()
             }
             else 
             {
-                state = GRAB_CAN;
+                state = STORE_CAN;
             }
-        }
-        break;
-
-    case GRAB_CAN:
-        // can has been sensed -> grab can
-        if (grab_can())
-        {
-            state = STORE_CAN;
-        }
-        else 
-        {
-            state = SEARCH;
         }
         break;
 
@@ -412,7 +393,7 @@ void check_state()
         state = INITIALIZE;
         break;
     }
-    // display.display();
+    display.display();
 }
 
 void handle_interrupt()

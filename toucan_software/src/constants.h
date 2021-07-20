@@ -20,26 +20,30 @@
 #define RIGHT_WHEEL_B PA_3
 #define FLAPPER_MOTOR PB_9
 
-const double RW_ADJUSTMENT_FACTOR = 0.8;
-const int MAX_INTEGRATOR_VALUE = 4000;
+const double RW_ADJUSTMENT_FACTOR = 1.2;
+const int MAX_INTEGRATOR_VALUE = 100;
 
 // Adafruit Display: PB6, PB7
 
 const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
-const int CRUISING_SPEED = 2150;
+const int CRUISING_SPEED = 1600;
 const int DROPOFF_SPEED = 1000;
 const int FLAPPER_SPEED = 650; 
 
 // Servo Position
 // MIN 500, MAX 2500
-// blake - 700, brian - 720, tara = 750
-const int CLAW_CLOSE = 720;
+// blake - 690, brian - 720, tara = 750
+const int CLAW_CLOSE = 750;
 const int CLAW_OPEN = 1050;
 const int ARM_DOWN = 500;
-const int ARM_UP = 1500;
+// blake 1550
+const int ARM_UP = 1550;
 const int SWIVEL_ORIGIN = 2500;
-const int RESERVOIR_POSITIONS[3] = {1150, 1450, 1800};
+
+// blake {950. 1150. 1500}, default 1000 1300 1600
+// brian {1150, 1450, 1800}
+const int RESERVOIR_POSITIONS[3] = {950, 1150, 1500};
 const int RESERVOIR_OPEN = 1000;
 const int RESERVOIR_CLOSE = 500;
 

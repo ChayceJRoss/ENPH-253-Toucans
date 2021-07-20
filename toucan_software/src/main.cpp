@@ -38,7 +38,7 @@ void setup()
   // put your setup code here, to run once:
   // skycrane sequence?
   init_pins();
-  // set_up_display();
+  set_up_display();
 }
 
 void loop()
