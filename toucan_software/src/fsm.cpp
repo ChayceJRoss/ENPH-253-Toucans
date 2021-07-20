@@ -302,10 +302,10 @@ bool reset_claw()
     pwm_start(SWIVEL_SERVO, SERVO_FREQ, SWIVEL_ORIGIN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     delay(1000);
     // Done: changed to partially closed
-    pwm_start(CLAW_SERVO, SERVO_FREQ, (CLAW_CLOSE + CLAW_OPEN) / 2, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(1000);
+    pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    delay(400);
     pwm_start(ARM_SERVO, SERVO_FREQ, ARM_DOWN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(200);
+    delay(800);
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     delay(200);
     pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
