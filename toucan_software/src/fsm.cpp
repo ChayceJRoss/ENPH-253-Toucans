@@ -185,6 +185,7 @@ bool search()
         // }
         if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD) // && can_sensed && (millis() - init_time_sensed > TIME_TO_GRAB_CAN_THRESHOLD))
         {
+            delay(50);
             pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
             // shut off flapper
             pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
@@ -224,7 +225,7 @@ bool store_can()
     //     reset_claw();
     //     return false;
     // }
-    // delay(1000);
+    delay(500);
 
     for (int i = ARM_DOWN; i < ARM_UP; i += 25)
     {
@@ -304,14 +305,14 @@ bool store_can()
 bool reset_claw()
 {
     pwm_start(SWIVEL_SERVO, SERVO_FREQ, SWIVEL_ORIGIN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(1000);
+    delay(2000);
     // Done: changed to partially closed
-    pwm_start(CLAW_SERVO, SERVO_FREQ, (CLAW_CLOSE + CLAW_OPEN) / 2, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(200);
+    pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    delay(400);
     pwm_start(ARM_SERVO, SERVO_FREQ, ARM_DOWN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(200);
+    delay(800);
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(200);
+    delay(400);
     pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     return true;
 }

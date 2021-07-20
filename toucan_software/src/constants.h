@@ -29,7 +29,7 @@ const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
 const int CRUISING_SPEED = 2150;
 const int DROPOFF_SPEED = 1000;
-const int FLAPPER_SPEED = 900; 
+const int FLAPPER_SPEED = 650; 
 
 // Servo Position
 // MIN 500, MAX 2500
@@ -39,7 +39,7 @@ const int CLAW_OPEN = 1050;
 const int ARM_DOWN = 500;
 const int ARM_UP = 1500;
 const int SWIVEL_ORIGIN = 2500;
-const int RESERVOIR_POSITIONS[3] = {1000, 1300, 1600};
+const int RESERVOIR_POSITIONS[3] = {1150, 1450, 1800};
 const int RESERVOIR_OPEN = 1000;
 const int RESERVOIR_CLOSE = 500;
 
