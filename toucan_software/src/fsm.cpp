@@ -221,7 +221,7 @@ bool store_can()
     //     reset_claw();
     //     return false;
     // }
-    
+
     delay(1000);
     for (int i = ARM_DOWN; i < ARM_UP; i += 25)
     {
@@ -294,7 +294,7 @@ bool store_can()
     // {
     //     reservoir_state = 0;
     // }
-    delay(1000);
+    delay(10000);
     return true;
 }
 
