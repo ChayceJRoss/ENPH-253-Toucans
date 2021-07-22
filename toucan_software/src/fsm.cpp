@@ -302,32 +302,14 @@ bool store_can()
         delay(1000);
     }
     reservoir_state = num % 3;
-
-    // if (reservoir_state < 2)
-    // {
-    //     reservoir_state++;
-    // }
-    // else
-    // {
-    //     reservoir_state = 0;
-    // }
-<<<<<<< HEAD
-    delay(10000);
-=======
     delay(3000);
->>>>>>> a2d70cece806dc8a53daef142bb62958e9e4933c
     return true;
 }
 
 bool reset_claw()
 {
     pwm_start(SWIVEL_SERVO, SERVO_FREQ, SWIVEL_ORIGIN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-<<<<<<< HEAD
-    delay(2000);
-    // Done: changed to partially closed
-=======
     delay(1000);
->>>>>>> a2d70cece806dc8a53daef142bb62958e9e4933c
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     delay(800);
     pwm_start(ARM_SERVO, SERVO_FREQ, ARM_DOWN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
@@ -337,7 +319,7 @@ bool reset_claw()
     pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     delay(50);
     // Only need this for blakes robot
-    pwm_start(SWIVEL_SERVO, SERVO_FREQ, 2300, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);\
+    pwm_start(SWIVEL_SERVO, SERVO_FREQ, 2300, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     // delay(1000); 
     return true;
 }
@@ -357,7 +339,6 @@ bool stop_drop_roll()
         delay(50);
         pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         delay(1000);
-
         pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         return true;
     }
@@ -380,7 +361,6 @@ void check_state()
     {
     case INITIALIZE:
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
-        // delay(10000);
         if (reset_claw())
         {
             state = SEARCH;
