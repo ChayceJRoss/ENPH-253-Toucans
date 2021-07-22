@@ -18,6 +18,7 @@ volatile int m = 1; // Elapsed time in previous state
 volatile int n = 0; // Elapsed time in current state
 volatile int init_time = 0;
 volatile int num = 0;
+volatile int last_tick = 0;
 
 volatile int robot_speed;
 
@@ -38,11 +39,11 @@ void display_values(int left_input, int right_input)
     display.print("Speed: ");
     display.println(robot_speed);
     display.print("P: ");
+    display.print(analogRead(P_POT));
+    display.print(" I: ");
+    display.print(analogRead(D_POT));
+    display.print(" D: ");
     display.println(analogRead(P_POT));
-    // display.print("I: ");
-    // display.println(analogRead(I_POT) * 10);
-    display.print("D: ");
-    display.println(analogRead(D_POT));
     display.print("m: ");
     display.print(m);
     display.print(" n: ");
@@ -92,9 +93,11 @@ void drive(int speed)
 
     int right_reading = analogRead(RIGHT_TAPE_SENSOR);
 
-    int kp = analogRead(P_POT)*10;
-    int kd = analogRead(D_POT)*10;
-    //int ki = analogRead(I_POT) * 10;
+    // int kp = analogRead(P_POT)*10;
+    
+    int kp = 140;
+    int kd = analogRead(P_POT) * 10;
+    int ki = analogRead(D_POT) * 10;
     robot_speed = analogRead(I_POT) * 5;
 
     //Finds error based on inputs from sensors
@@ -126,17 +129,17 @@ void drive(int speed)
 
     p = kp * error;
     d = kd * delta / (m + n);
-    // i = ki * error + i;
+    i = ki * error + i;
     //i = 0;
 
-    // if (i > MAX_INTEGRATOR_VALUE)
-    // {
-    //     i = MAX_INTEGRATOR_VALUE;
-    // }
-    // else if (i < -MAX_INTEGRATOR_VALUE)
-    // {
-    //     i = -MAX_INTEGRATOR_VALUE;
-    // }
+    if (i > MAX_INTEGRATOR_VALUE)
+    {
+        i = MAX_INTEGRATOR_VALUE;
+    }
+    else if (i < -MAX_INTEGRATOR_VALUE)
+    {
+        i = -MAX_INTEGRATOR_VALUE;
+    }
 
     g = p + i + d;
     if (g < 0)
@@ -170,8 +173,19 @@ bool search()
         pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
         return true;
     }
+
     else 
     {
+        if (millis() - last_tick > 3000)
+        {
+            pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            delay(20);
+            pwm_start(ARM_SERVO, SERVO_FREQ, 800, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+            delay(100);
+            pwm_start(ARM_SERVO, SERVO_FREQ, ARM_DOWN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+            delay(100);
+            last_tick = millis();
+        }
         drive(CRUISING_SPEED);
     
         // start flapper
@@ -273,6 +287,9 @@ bool store_can()
     delay(500);
 
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    delay(50);
+    // only for blakes robot
+    pwm_start(SWIVEL_SERVO, SERVO_FREQ, 2300, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
     delay(500);
 
@@ -294,22 +311,34 @@ bool store_can()
     // {
     //     reservoir_state = 0;
     // }
+<<<<<<< HEAD
     delay(10000);
+=======
+    delay(3000);
+>>>>>>> a2d70cece806dc8a53daef142bb62958e9e4933c
     return true;
 }
 
 bool reset_claw()
 {
     pwm_start(SWIVEL_SERVO, SERVO_FREQ, SWIVEL_ORIGIN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+<<<<<<< HEAD
     delay(2000);
     // Done: changed to partially closed
+=======
+    delay(1000);
+>>>>>>> a2d70cece806dc8a53daef142bb62958e9e4933c
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(400);
+    delay(800);
     pwm_start(ARM_SERVO, SERVO_FREQ, ARM_DOWN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     delay(800);
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     delay(400);
     pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    delay(50);
+    // Only need this for blakes robot
+    pwm_start(SWIVEL_SERVO, SERVO_FREQ, 2300, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);\
+    // delay(1000); 
     return true;
 }
 
@@ -351,7 +380,7 @@ void check_state()
     {
     case INITIALIZE:
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
-        // delay(1000);
+        // delay(10000);
         if (reset_claw())
         {
             state = SEARCH;
