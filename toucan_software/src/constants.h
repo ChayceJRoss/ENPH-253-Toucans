@@ -14,13 +14,15 @@
 #define I_POT PA6
 
 // A = forward, B = backward
+// Brian wheels flipped, Blake and Tara regular
 #define LEFT_WHEEL_A PA_0
 #define LEFT_WHEEL_B PA_1
 #define RIGHT_WHEEL_A PA_2
 #define RIGHT_WHEEL_B PA_3
 #define FLAPPER_MOTOR PB_9
 
-const double RW_ADJUSTMENT_FACTOR = 1.2;
+// blake 1.0, tara 1.1, brian
+const double RW_ADJUSTMENT_FACTOR = 1.1;
 const int MAX_INTEGRATOR_VALUE = 100;
 
 // Adafruit Display: PB6, PB7
@@ -29,23 +31,23 @@ const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
 const int CRUISING_SPEED = 1600;
 const int DROPOFF_SPEED = 1000;
-const int FLAPPER_SPEED = 900; 
+const int FLAPPER_SPEED = 1000; 
 
 // Servo Position
 // MIN 500, MAX 2500
 // blake - 690, brian - 720, tara = 750
 const int CLAW_CLOSE = 750;
-const int CLAW_OPEN = 1050;
+const int CLAW_OPEN = 950;
 const int ARM_DOWN = 500;
 // blake 1550
 const int ARM_UP = 1550;
 const int SWIVEL_ORIGIN = 2500;
-// blake {950. 1150. 1500}, default 1000 1300 1600
-const int RESERVOIR_POSITIONS[3] = {950, 1150, 1500};
+// blake {950, 1150, 1500}, tara {900, 1200, 1500}, brian {1150, 1450, 1800}, default 1000 1300 1600
+const int RESERVOIR_POSITIONS[3] = {900, 1200, 1500};
 const int RESERVOIR_OPEN = 1000;
 const int RESERVOIR_CLOSE = 500;
 
-const int CAN_SENSING_THRESHOLD = 200;
+const int CAN_SENSING_THRESHOLD = 300;
 const int TIME_TO_GRAB_CAN_THRESHOLD = 500;
 const int BW_THRES = 100; // Black > 100, White < 100 approx
 // const int GREY1_2 = 2;
