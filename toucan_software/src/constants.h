@@ -38,7 +38,7 @@ const int FLAPPER_SPEED = 1000;
 // Servo Position
 // MIN 500, MAX 2500
 // blake - 690, brian - 720, tara = 750
-const int CLAW_CLOSE = 750;
+const int CLAW_CLOSE = 730;
 const int CLAW_OPEN = 950;
 const int ARM_DOWN = 500;
 // blake 1550
@@ -48,8 +48,8 @@ const int SWIVEL_ORIGIN = 2500;
 
 // blake - bluecan {950. 1150. 1500}, default 1000 1300 1600
 // brian - toucan too many {1150, 1450, 1800}
-// tara - mr roboto {1200, 1500, 1900}
-const int RESERVOIR_POSITIONS[3] = {1250, 1550, 1900};
+// tara - mr roboto {1300, 1650, 1950}
+const int RESERVOIR_POSITIONS[3] = {1300, 1650, 1950};
 const int RESERVOIR_OPEN = 1000;
 const int RESERVOIR_CLOSE = 500;
 
