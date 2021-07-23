@@ -24,7 +24,7 @@
 // tara: 1.1
 // brian: 0.9
 // blake 1.0
-const double RW_ADJUSTMENT_FACTOR = 0.9;
+const double RW_ADJUSTMENT_FACTOR = 1.1;
 const int MAX_INTEGRATOR_VALUE = 100;
 
 // Adafruit Display: PB6, PB7
@@ -33,7 +33,7 @@ const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
 const int CRUISING_SPEED = 1000;
 const int DROPOFF_SPEED = 1000;
-const int FLAPPER_SPEED = 1000; 
+const int FLAPPER_SPEED = 800; 
 
 // Servo Position
 // MIN 500, MAX 2500
@@ -43,7 +43,7 @@ const int CLAW_OPEN = 950;
 const int ARM_DOWN = 500;
 // blake 1550
 const int ARM_UP = 1550;
-const int HICCUP = 800;
+const int HICCUP = 600;
 const int SWIVEL_ORIGIN = 2500;
 
 // blake - bluecan {950. 1150. 1500}, default 1000 1300 1600

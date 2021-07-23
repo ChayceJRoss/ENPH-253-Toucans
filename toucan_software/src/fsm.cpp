@@ -63,11 +63,22 @@ void turn_wheels(int g, int speed)
 {
     if (error == 0)
     {
+        if (lasterror == 0)
+        {
+        pwm_start(LEFT_WHEEL_A, DC_FREQ, 0.7 * speed, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+
+        pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0.7 * speed * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        }
+        else
+        {
         pwm_start(LEFT_WHEEL_A, DC_FREQ, speed, RESOLUTION_12B_COMPARE_FORMAT);
         pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
         pwm_start(RIGHT_WHEEL_A, DC_FREQ, speed * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
         pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        }
     }
     else if (error < 0)
     {
@@ -93,11 +104,13 @@ void drive(int speed)
 
     int right_reading = analogRead(RIGHT_TAPE_SENSOR);
 
-    int kp = analogRead(P_POT) * 10;
-    int kd = analogRead(D_POT) * 10;
-    int ki = 0;
-    //int ki = analogRead(D_POT) * 10;
-    robot_speed = analogRead(I_POT) * 5;
+    // int kp = analogRead(P_POT) * 10;
+    // int kd = analogRead(D_POT) * 10;
+    // int ki = analogRead(I_POT) * 10;
+    int kp = 70;
+    int kd = 0;
+    int ki = 300;
+    robot_speed = 1950;
 
     // Finds error based on inputs from sensors
     if (left_reading > BW_THRES && right_reading > BW_THRES)
@@ -182,7 +195,7 @@ bool search()
             pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
             // shut off flapper
-            pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 300, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 400, RESOLUTION_12B_COMPARE_FORMAT);
 
             // stop wheels
             pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
@@ -198,9 +211,9 @@ bool search()
             pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             delay(20);
             pwm_start(ARM_SERVO, SERVO_FREQ, HICCUP, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-            delay(100);
+            delay(60);
             pwm_start(ARM_SERVO, SERVO_FREQ, ARM_DOWN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-            delay(100);
+            delay(60);
             last_hiccup = millis();
         }
         drive(CRUISING_SPEED);
