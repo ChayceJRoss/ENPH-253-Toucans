@@ -22,7 +22,7 @@
 #define FLAPPER_MOTOR PB_9
 
 // blake 1.0, tara 1.1, brian 0.9
-const double RW_ADJUSTMENT_FACTOR = 1.0;
+const double RW_ADJUSTMENT_FACTOR = 0.9;
 const int MAX_INTEGRATOR_VALUE = 100;
 
 // Adafruit Display: PB6, PB7
@@ -31,7 +31,8 @@ const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
 const int CRUISING_SPEED = 1600;
 const int DROPOFF_SPEED = 1000;
-const int FLAPPER_SPEED = 1000; 
+const int FLAPPER_SPEED = 1000;
+const int HICCUP = 600;
 
 // Servo Position
 // MIN 500, MAX 2500
