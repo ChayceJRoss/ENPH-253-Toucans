@@ -203,10 +203,11 @@ bool search()
         {
             pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             delay(20);
-            pwm_start(CLAW_SERVO, SERVO_FREQ, 750, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+            pwm_start(CLAW_SERVO, SERVO_FREQ, 700, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
             pwm_start(ARM_SERVO, SERVO_FREQ, HICCUP, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-            delay(60);
+            delay(80);
             pwm_start(ARM_SERVO, SERVO_FREQ, ARM_DOWN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+            pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
             delay(60);
             last_tick = millis();
         }
