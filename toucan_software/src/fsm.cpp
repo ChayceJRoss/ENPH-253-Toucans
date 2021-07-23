@@ -213,25 +213,17 @@ bool search()
 
 bool store_can()
 {
-    // if (analogRead(CLAW_SENSOR) > CAN_SENSING_THRESHOLD)
-    // {
-    //     reset_claw();
-    //     return false;
-    // }
-    delay(1000);
+    delay(500);
 
     for (int i = ARM_DOWN; i < ARM_UP; i += 25)
     {
         pwm_start(ARM_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         delay(15);
     }
+    
+    pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
-    // if (analogRead(CLAW_SENSOR) > CAN_SENSING_THRESHOLD)
-    // {
-    //     reset_claw();
-    //     return false;
-    // }
-    delay(1000);
+    delay(800);
 
     for (int i = SWIVEL_ORIGIN; i > RESERVOIR_POSITIONS[reservoir_state]; i -= 50)
     {
@@ -239,23 +231,17 @@ bool store_can()
         delay(30);
     }
 
-    // if (analogRead(CLAW_SENSOR) > CAN_SENSING_THRESHOLD)
-    // {
-    //     reset_claw();
-    //     return false;
-    // }
-    delay(1000);
+    delay(800);
 
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
-    delay(500);
+    delay(200);
 
     for (int i = RESERVOIR_POSITIONS[reservoir_state]; i < SWIVEL_ORIGIN; i += 50)
     {
         pwm_start(SWIVEL_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         delay(15);
     }
-    delay(1000);
 
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
@@ -267,12 +253,14 @@ bool store_can()
         delay(15);
     }
 
-    delay(500);
+    delay(100);
 
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     delay(50);
+    // only for blakes robot
+    //pwm_start(SWIVEL_SERVO, SERVO_FREQ, 2300, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
-    delay(500);
+    //delay(500);
 
     num++;
     if (num % 3 == 0)
@@ -283,16 +271,6 @@ bool store_can()
         delay(1000);
     }
     reservoir_state = num % 3;
-
-    // if (reservoir_state < 2)
-    // {
-    //     reservoir_state++;
-    // }
-    // else
-    // {
-    //     reservoir_state = 0;
-    // }
-    delay(3000);
     return true;
 }
 
