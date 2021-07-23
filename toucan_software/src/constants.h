@@ -21,9 +21,8 @@
 #define RIGHT_WHEEL_B PA_3
 #define FLAPPER_MOTOR PB_9
 
-// blake 1.0, tara 1.1, brian
-const double RW_ADJUSTMENT_FACTOR = 1.0;
-//const double LW_ADJUSTMENT_FACTOR = 1.1;
+// blake 1.0, tara 1.1, brian 0.9
+const double RW_ADJUSTMENT_FACTOR = 1;
 const int MAX_INTEGRATOR_VALUE = 100;
 
 // Adafruit Display: PB6, PB7
@@ -32,19 +31,20 @@ const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
 const int CRUISING_SPEED = 1600;
 const int DROPOFF_SPEED = 1000;
-const int FLAPPER_SPEED = 800; 
+const int FLAPPER_SPEED = 1000;
+const int HICCUP = 700;
 
 // Servo Position
 // MIN 500, MAX 2500
 // blake - 690, brian - 720, tara = 750
-const int CLAW_CLOSE = 650;
-const int CLAW_OPEN = 920;
+const int CLAW_CLOSE = 690;
+const int CLAW_OPEN = 950;
 const int ARM_DOWN = 500;
 // blake 1550
 const int ARM_UP = 1550;
 const int SWIVEL_ORIGIN = 2500;
 // blake {950, 1150, 1500}, tara {900, 1200, 1500}, brian {1150, 1450, 1800}, default 1000 1300 1600
-const int RESERVOIR_POSITIONS[3] = {925, 1150, 1500};
+const int RESERVOIR_POSITIONS[3] = {950, 1150, 1500};
 const int RESERVOIR_OPEN = 1000;
 const int RESERVOIR_CLOSE = 500;
 
@@ -52,7 +52,8 @@ const int CAN_SENSING_THRESHOLD = 300;
 const int TIME_TO_GRAB_CAN_THRESHOLD = 500;
 const int BW_THRES = 100; // Black > 100, White < 100 approx
 
+
 // display set-up
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
-#define OLED_RESET -1    // This display does not have a reset pin accessible
+#define OLED_RESET -1    // This display does not have a reset pin accessible 

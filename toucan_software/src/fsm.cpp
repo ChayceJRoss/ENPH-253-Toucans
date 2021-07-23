@@ -203,7 +203,8 @@ bool search()
         {
             pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             delay(20);
-            pwm_start(ARM_SERVO, SERVO_FREQ, 600, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+            pwm_start(CLAW_SERVO, SERVO_FREQ, 750, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+            pwm_start(ARM_SERVO, SERVO_FREQ, HICCUP, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
             delay(60);
             pwm_start(ARM_SERVO, SERVO_FREQ, ARM_DOWN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
             delay(60);
@@ -237,7 +238,7 @@ bool store_can()
         delay(30);
     }
 
-    delay(800);
+    delay(1000);
 
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
@@ -339,6 +340,11 @@ void check_state()
         // delay(10000);
         if (reset_claw())
         {
+            pwm_start(LEFT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            delay(50);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
             state = SEARCH;
         }
         break;
@@ -361,6 +367,11 @@ void check_state()
         // store can -> search
         if (store_can())
         {
+            pwm_start(LEFT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            delay(50);
             state = SEARCH;
         }
         break;
