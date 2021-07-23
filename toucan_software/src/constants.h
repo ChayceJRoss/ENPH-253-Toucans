@@ -22,7 +22,7 @@
 #define FLAPPER_MOTOR PB_9
 
 // blake 1.0, tara 1.1, brian 0.9
-const double RW_ADJUSTMENT_FACTOR = 0.9;
+const double RW_ADJUSTMENT_FACTOR = 1;
 const int MAX_INTEGRATOR_VALUE = 100;
 
 // Adafruit Display: PB6, PB7

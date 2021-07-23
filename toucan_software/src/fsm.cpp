@@ -44,7 +44,7 @@ void display_values(int left_input, int right_input)
     display.print(" I: ");
     display.print(analogRead(I_POT));
     display.print(" D: ");
-    display.println(analogRead(P_POT));
+    display.println(analogRead(D_POT));
     display.print("m: ");
     display.print(m);
     display.print(" n: ");
@@ -106,11 +106,10 @@ void drive(int speed)
     int right_reading = analogRead(RIGHT_TAPE_SENSOR);
 
     int kp = analogRead(P_POT) * 10;
-    // int kd = analogRead(D_POT) * 10;
-    int kd = 0;
+    int kd = analogRead(D_POT) * 10;
     int ki = analogRead(I_POT) * 10;
     // int ki = 0
-    robot_speed = analogRead(D_POT) * 5;
+    robot_speed = 1975;
 
     //Finds error based on inputs from sensors
     if (left_reading > BW_THRES && right_reading > BW_THRES)
@@ -158,9 +157,9 @@ void drive(int speed)
     {
         g = g * -1;
     }
-    if (g > speed)
+    if (g > 1000)
     {
-        g = speed;
+        g = 1000;
     }
     turn_wheels(g, robot_speed);
 
