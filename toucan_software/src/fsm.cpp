@@ -41,9 +41,9 @@ void display_values(int left_input, int right_input)
     display.print("P: ");
     display.print(analogRead(P_POT));
     display.print(" I: ");
-    display.print(analogRead(D_POT));
+    display.print(analogRead(I_POT));
     display.print(" D: ");
-    display.println(analogRead(P_POT));
+    display.println(analogRead(D_POT));
     display.print("m: ");
     display.print(m);
     display.print(" n: ");
@@ -63,11 +63,22 @@ void turn_wheels(int g, int speed)
 {
     if (error == 0)
     {
-        pwm_start(LEFT_WHEEL_A, DC_FREQ, speed, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        if (lasterror != 0)
+        {
+            pwm_start(LEFT_WHEEL_A, DC_FREQ, speed, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);     
 
-        pwm_start(RIGHT_WHEEL_A, DC_FREQ, speed * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_A, DC_FREQ, speed * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+       }
+       else
+       {
+            pwm_start(LEFT_WHEEL_A, DC_FREQ, speed, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+
+            pwm_start(RIGHT_WHEEL_A, DC_FREQ, speed * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+       }
     }
     else if (error < 0)
     {
@@ -92,13 +103,11 @@ void drive(int speed)
     int left_reading = analogRead(LEFT_TAPE_SENSOR);
 
     int right_reading = analogRead(RIGHT_TAPE_SENSOR);
-
-    // int kp = analogRead(P_POT)*10;
     
-    int kp = 140;
-    int kd = analogRead(P_POT) * 10;
-    int ki = analogRead(D_POT) * 10;
-    robot_speed = analogRead(I_POT) * 5;
+    int kp = analogRead(P_POT) * 10;
+    int kd = analogRead(D_POT) * 10;
+    int ki = analogRead(I_POT) * 10;
+    robot_speed = 2100;
 
     //Finds error based on inputs from sensors
     if (left_reading > BW_THRES && right_reading > BW_THRES)
@@ -176,44 +185,11 @@ bool search()
 
     else 
     {
-        if (millis() - last_tick > 3000)
-        {
-            pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-            delay(20);
-            pwm_start(ARM_SERVO, SERVO_FREQ, 800, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-            delay(100);
-            pwm_start(ARM_SERVO, SERVO_FREQ, ARM_DOWN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-            delay(100);
-            last_tick = millis();
-        }
-        drive(CRUISING_SPEED);
-    
-        // start flapper
-        pwm_start(FLAPPER_MOTOR, SERVO_FREQ, FLAPPER_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
-
-        // pwm_start(LEFT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
-        // pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        // pwm_start(RIGHT_WHEEL_A, DC_FREQ, CRUISING_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
-        // pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-
-        bool can_sensed = false;
-        // if(analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD){
-        //     if (init_time_sensed == 0)
-        //     {
-        //         init_time_sensed = millis();
-        //     }
-        //     can_sensed = true;
-        // }
-        // else
-        // {
-        //     init_time_sensed = 0;
-        //     can_sensed = false;
-        // }
-        if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD) // && can_sensed && (millis() - init_time_sensed > TIME_TO_GRAB_CAN_THRESHOLD))
+        if (analogRead(CLAW_SENSOR) < CAN_SENSING_THRESHOLD)
         {
             pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
             // shut off flapper
-            pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 400, RESOLUTION_12B_COMPARE_FORMAT);
 
             // stop wheels
             pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
@@ -223,55 +199,55 @@ bool search()
 
         return true;
         }
+        if (millis() - last_tick > 3000)
+        {
+            pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            delay(20);
+            pwm_start(ARM_SERVO, SERVO_FREQ, 600, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+            delay(60);
+            pwm_start(ARM_SERVO, SERVO_FREQ, ARM_DOWN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+            delay(60);
+            last_tick = millis();
+        }
+        drive(CRUISING_SPEED);
+    
+        // start flapper
+        pwm_start(FLAPPER_MOTOR, SERVO_FREQ, FLAPPER_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
     }
     return false;
 }
 
 bool store_can()
 {
-    // if (analogRead(CLAW_SENSOR) > CAN_SENSING_THRESHOLD)
-    // {
-    //     reset_claw();
-    //     return false;
-    // }
-    delay(1000);
+    delay(500);
 
     for (int i = ARM_DOWN; i < ARM_UP; i += 25)
     {
         pwm_start(ARM_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         delay(15);
     }
+    
+    pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
-    // if (analogRead(CLAW_SENSOR) > CAN_SENSING_THRESHOLD)
-    // {
-    //     reset_claw();
-    //     return false;
-    // }
     delay(1000);
 
     for (int i = SWIVEL_ORIGIN; i > RESERVOIR_POSITIONS[reservoir_state]; i -= 50)
     {
         pwm_start(SWIVEL_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        delay(15);
+        delay(30);
     }
 
-    // if (analogRead(CLAW_SENSOR) > CAN_SENSING_THRESHOLD)
-    // {
-    //     reset_claw();
-    //     return false;
-    // }
-    delay(1000);
+    delay(800);
 
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
-    delay(500);
+    delay(200);
 
     for (int i = RESERVOIR_POSITIONS[reservoir_state]; i < SWIVEL_ORIGIN; i += 50)
     {
         pwm_start(SWIVEL_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         delay(15);
     }
-    delay(1000);
 
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
@@ -283,14 +259,14 @@ bool store_can()
         delay(15);
     }
 
-    delay(500);
+    delay(100);
 
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     delay(50);
     // only for blakes robot
     pwm_start(SWIVEL_SERVO, SERVO_FREQ, 2300, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
-    delay(500);
+    //delay(500);
 
     num++;
     if (num % 3 == 0)
@@ -301,16 +277,6 @@ bool store_can()
         delay(1000);
     }
     reservoir_state = num % 3;
-
-    // if (reservoir_state < 2)
-    // {
-    //     reservoir_state++;
-    // }
-    // else
-    // {
-    //     reservoir_state = 0;
-    // }
-    delay(3000);
     return true;
 }
 
