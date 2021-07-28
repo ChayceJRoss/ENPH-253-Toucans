@@ -107,7 +107,7 @@ void drive(int speed)
     int kp = analogRead(P_POT) * 10;
     int kd = analogRead(D_POT) * 10;
     int ki = analogRead(I_POT) * 10;
-    robot_speed = 2100;
+    robot_speed = 2125;
 
     //Finds error based on inputs from sensors
     if (left_reading > BW_THRES && right_reading > BW_THRES)

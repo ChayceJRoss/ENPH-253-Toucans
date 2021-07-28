@@ -32,7 +32,7 @@ const int DC_FREQ = 1000;
 const int CRUISING_SPEED = 1600;
 const int DROPOFF_SPEED = 1000;
 // flapper speed 800
-const int FLAPPER_SPEED = 800;
+const int FLAPPER_SPEED = 750;
 const int HICCUP = 650;
 
 // Servo Position
