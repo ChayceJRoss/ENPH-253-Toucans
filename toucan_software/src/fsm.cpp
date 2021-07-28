@@ -63,22 +63,27 @@ void turn_wheels(int g, int speed)
 {
     if (error == 0)
     {
-        if (lasterror == 0)
-        {
-        pwm_start(LEFT_WHEEL_A, DC_FREQ, 0.7 * speed, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-
-        pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0.7 * speed * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        }
-        else
-        {
         pwm_start(LEFT_WHEEL_A, DC_FREQ, speed, RESOLUTION_12B_COMPARE_FORMAT);
         pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
         pwm_start(RIGHT_WHEEL_A, DC_FREQ, speed * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
         pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        }
+        // if (lasterror == 0)
+        // {
+        //     pwm_start(LEFT_WHEEL_A, DC_FREQ, 0.7 * speed, RESOLUTION_12B_COMPARE_FORMAT);
+        //     pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+
+        //     pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0.7 * speed * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
+        //     pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        // }
+        // else
+        // {
+        //     pwm_start(LEFT_WHEEL_A, DC_FREQ, speed, RESOLUTION_12B_COMPARE_FORMAT);
+        //     pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+
+        //     pwm_start(RIGHT_WHEEL_A, DC_FREQ, speed * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
+        //     pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        // }
     }
     else if (error < 0)
     {
@@ -107,10 +112,10 @@ void drive(int speed)
     // int kp = analogRead(P_POT) * 10;
     // int kd = analogRead(D_POT) * 10;
     // int ki = analogRead(I_POT) * 10;
-    int kp = 70;
-    int kd = 0;
-    int ki = 300;
-    robot_speed = 1950;
+    int kp = 120;
+    int kd = 150;
+    int ki = 250;
+    robot_speed = 2000;
 
     // Finds error based on inputs from sensors
     if (left_reading > BW_THRES && right_reading > BW_THRES)
@@ -231,7 +236,7 @@ bool store_can()
         pwm_start(ARM_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         delay(15);
     }
-    
+
     pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
     delay(800);
 
@@ -344,6 +349,11 @@ void check_state()
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
         if (reset_claw())
         {
+            pwm_start(LEFT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            delay(50);
             state = SEARCH;
         }
         break;
@@ -366,6 +376,11 @@ void check_state()
         // store can -> search
         if (store_can())
         {
+            pwm_start(LEFT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            delay(50);
             state = SEARCH;
         }
         break;
