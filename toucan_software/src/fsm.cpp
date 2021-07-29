@@ -38,20 +38,26 @@ void display_values(int left_input, int right_input)
     display.println(right_input);
     display.print("Speed: ");
     display.println(robot_speed);
-    display.print("P: ");
-    display.print(analogRead(P_POT));
-    display.print(" I: ");
+    // display.print("kp: ");
+    // display.print(analogRead(P_POT));
+    display.print("ki: ");
     display.print(analogRead(I_POT));
-    display.print(" D: ");
+    display.print(" kd: ");
     display.println(analogRead(D_POT));
-    display.print("m: ");
-    display.print(m);
-    display.print(" n: ");
-    display.print(n);
+    display.print("P: ");
+    display.print(p);
+    display.print(" I: ");
+    display.print(i);
+    display.print(" D: ");
+    display.println(d);
+    // display.print("m: ");
+    // display.print(m);
+    // display.print(" n: ");
+    // display.print(n);
     display.print(" delta: ");
     display.println(delta);
-    display.print("G: ");
-    display.println(g);
+    // display.print("G: ");
+    // display.println(g);
     display.print("Err: ");
     display.print(error);
     display.print("  Pos: ");
@@ -104,10 +110,11 @@ void drive(int speed)
 
     int right_reading = analogRead(RIGHT_TAPE_SENSOR);
     
-    int kp = analogRead(P_POT) * 10;
+    // int kp = analogRead(P_POT) * 10;
+    int kp = 16 * 10;
     int kd = analogRead(D_POT) * 10;
     int ki = analogRead(I_POT) * 10;
-    robot_speed = 2125;
+    robot_speed = 2200;
 
     //Finds error based on inputs from sensors
     if (left_reading > BW_THRES && right_reading > BW_THRES)
@@ -139,7 +146,6 @@ void drive(int speed)
     p = kp * error;
     d = kd * delta / (m + n);
     i = ki * error + i;
-    //i = 0;
 
     if (i > MAX_INTEGRATOR_VALUE)
     {
@@ -331,8 +337,8 @@ void check_state()
     display.clearDisplay();
     display.setCursor(0, 0);
     display.setTextColor(SSD1306_WHITE);
-    display.print("state: ");
-    display.println(state);
+    // display.print("state: ");
+    // display.println(state);
 
     switch (state)
     {
