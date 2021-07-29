@@ -5,7 +5,7 @@
 #include "constants.h"
 
 // Display relevant PID values on LCD screen
-void display_values();
+void display_values(int left_reading, int right_reading);
 
 // adjusting the wheels for PID
 void turn_wheels(int g, int speed);

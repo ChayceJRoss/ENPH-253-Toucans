@@ -15,8 +15,8 @@
 
 // A = forward, B = backward
 // Brian wheels flipped, Blake and Tara regular
-#define LEFT_WHEEL_A PA_2
-#define LEFT_WHEEL_B PA_3
+#define LEFT_WHEEL_A PA_3
+#define LEFT_WHEEL_B PA_2
 #define RIGHT_WHEEL_A PA_0
 #define RIGHT_WHEEL_B PA_1
 #define FLAPPER_MOTOR PB_9
