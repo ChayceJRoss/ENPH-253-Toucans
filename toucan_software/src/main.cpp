@@ -19,13 +19,11 @@ void init_pins()
   pinMode(ARM_SERVO, OUTPUT);
   pinMode(SWIVEL_SERVO, OUTPUT);
   pinMode(CLAW_SENSOR, INPUT);
-  pinMode(FRONT_DROPOFF_SENSOR, INPUT);
-  attachInterrupt(digitalPinToInterrupt(FRONT_DROPOFF_SENSOR), handle_interrupt, RISING);
+  pinMode(DROPOFF_SENSOR, INPUT);
   pinMode(LEFT_TAPE_SENSOR, INPUT);
   pinMode(RIGHT_TAPE_SENSOR, INPUT);
   pinMode(P_POT, INPUT);
   pinMode(D_POT, INPUT);
-  pinMode(I_POT, INPUT);
   pinMode(LEFT_WHEEL_A, OUTPUT);
   pinMode(LEFT_WHEEL_B, OUTPUT);
   pinMode(RIGHT_WHEEL_A, OUTPUT);
