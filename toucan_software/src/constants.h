@@ -7,11 +7,11 @@
 
 #define LEFT_TAPE_SENSOR PB0
 #define RIGHT_TAPE_SENSOR PB1
-#define FRONT_DROPOFF_SENSOR PB10
+#define DROPOFF_SENSOR PA6
 #define CLAW_SENSOR PA7
 #define P_POT PA4
 #define D_POT PA5
-#define I_POT PA6
+// #define I_POT PA6
 
 // A = forward, B = backward
 // Brian wheels flipped, Blake and Tara regular
@@ -33,7 +33,7 @@ const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
 const int CRUISING_SPEED = 1000;
 const int DROPOFF_SPEED = 1000;
-const int FLAPPER_SPEED = 800; 
+const int FLAPPER_SPEED = 650; 
 
 // Servo Position
 // MIN 500, MAX 2500
@@ -49,12 +49,12 @@ const int SWIVEL_ORIGIN = 2500;
 // blake - bluecan {950. 1150. 1500}, default 1000 1300 1600
 // brian - toucan too many {1150, 1450, 1800}
 // tara - mr roboto {1300, 1650, 1950}
-const int RESERVOIR_POSITIONS[3] = {1300, 1650, 1950};
+const int RESERVOIR_POSITIONS[3] = {1285, 1635, 1935};
 const int RESERVOIR_OPEN = 1000;
 const int RESERVOIR_CLOSE = 500;
 
 const int CAN_SENSING_THRESHOLD = 300;
-const int TIME_TO_GRAB_CAN_THRESHOLD = 500;
+const int DROPOFF_THRESHOLD = 100;
 const int BW_THRES = 100; // Black > 100, White < 100 approx
 
 // display set-up

@@ -28,7 +28,4 @@ bool stop_drop_roll();
 // checks the state of the FSM and executes the state
 void check_state();
 
-// changes state to ALIGN once front dropoff sensor is triggered
-void handle_interrupt();
-
 extern Adafruit_SSD1306 display;

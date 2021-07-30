@@ -39,11 +39,11 @@ void display_values(int left_input, int right_input)
     display.print("Speed: ");
     display.println(robot_speed);
     display.print("P: ");
-    display.print(analogRead(P_POT));
+    display.print(p);
     display.print(" I: ");
-    display.print(0);
+    display.print(i);
     display.print(" D: ");
-    display.println(analogRead(D_POT));
+    display.println(d);
     display.print("m: ");
     display.print(m);
     display.print(" n: ");
@@ -68,22 +68,6 @@ void turn_wheels(int g, int speed)
 
         pwm_start(RIGHT_WHEEL_A, DC_FREQ, speed * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
         pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        // if (lasterror == 0)
-        // {
-        //     pwm_start(LEFT_WHEEL_A, DC_FREQ, 0.7 * speed, RESOLUTION_12B_COMPARE_FORMAT);
-        //     pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-
-        //     pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0.7 * speed * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
-        //     pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        // }
-        // else
-        // {
-        //     pwm_start(LEFT_WHEEL_A, DC_FREQ, speed, RESOLUTION_12B_COMPARE_FORMAT);
-        //     pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-
-        //     pwm_start(RIGHT_WHEEL_A, DC_FREQ, speed * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
-        //     pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        // }
     }
     else if (error < 0)
     {
@@ -112,10 +96,10 @@ void drive(int speed)
     // int kp = analogRead(P_POT) * 10;
     // int kd = analogRead(D_POT) * 10;
     // int ki = analogRead(I_POT) * 10;
-    int kp = 120;
-    int kd = 150;
-    int ki = 250;
-    robot_speed = 2000;
+    int kp = 140;
+    int kd = 200;
+    // int ki = 250;
+    robot_speed = 1600;
 
     // Finds error based on inputs from sensors
     if (left_reading > BW_THRES && right_reading > BW_THRES)
@@ -146,7 +130,8 @@ void drive(int speed)
 
     p = kp * error;
     d = kd * delta / (m + n);
-    i = ki * error + i;
+    // i = ki * error + i;
+    i = 0;
 
     if (i > MAX_INTEGRATOR_VALUE)
     {
@@ -186,9 +171,19 @@ void drive(int speed)
 
 bool search()
 {
-    if (at_dropoff)
+    if (analogRead(DROPOFF_SENSOR) < 100)
     {
+        at_dropoff = true;
+        // stop flapper
         pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        // stop wheels
+        pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        // open reservoir
+        pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+
         return true;
     }
 
@@ -281,13 +276,6 @@ bool store_can()
     // pwm_start(SWIVEL_SERVO, SERVO_FREQ, 2300, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
     num++;
-    if (num % 3 == 0)
-    {
-        pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        delay(1000);
-        pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        delay(1000);
-    }
     reservoir_state = num % 3;
     return true;
 }
@@ -312,20 +300,12 @@ bool reset_claw()
 
 bool stop_drop_roll()
 {
-    // check that the robot is in line with the return vehicle, i.e. the front sensor has just left
-    // the tape that is along the side of the return vehicle
-    drive(DROPOFF_SPEED);
-    if (digitalRead(FRONT_DROPOFF_SENSOR) == 0)
+    drive(CRUISING_SPEED);
+    if (analogRead(DROPOFF_SENSOR) > DROPOFF_THRESHOLD)
     {
-        // stop wheels
-        pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
-        delay(50);
-        pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        delay(1000);
         pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        at_dropoff = false;
+        reservoir_state = 0;
         return true;
     }
     return false;
@@ -342,6 +322,8 @@ void check_state()
     display.setTextColor(SSD1306_WHITE);
     display.print("state: ");
     display.println(state);
+    display.print("dropoff sensor: ");
+    display.println(analogRead(DROPOFF_SENSOR));
 
     switch (state)
     {
@@ -399,9 +381,4 @@ void check_state()
         break;
     }
     display.display();
-}
-
-void handle_interrupt()
-{
-    // at_dropoff = true;
 }
