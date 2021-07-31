@@ -103,7 +103,7 @@ void turn_wheels(int g, int speed)
     }
 }
 
-void drive(int speed)
+void drive()
 {
     int left_reading = analogRead(LEFT_TAPE_SENSOR);
     int right_reading = analogRead(RIGHT_TAPE_SENSOR);
@@ -219,7 +219,7 @@ bool search()
             delay(60);
             last_tick = millis();
         }
-        drive(CRUISING_SPEED);
+        drive();
 
         // start flapper
         pwm_start(FLAPPER_MOTOR, SERVO_FREQ, FLAPPER_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
