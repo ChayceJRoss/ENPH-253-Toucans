@@ -40,8 +40,8 @@ void display_values(int left_input, int right_input)
     display.println(robot_speed);
     // display.print("kp: ");
     // display.print(analogRead(P_POT));
-    display.print("ki: ");
-    display.print(analogRead(I_POT));
+    // display.print("ki: ");
+    // display.print(analogRead(I_POT));
     display.print(" kd: ");
     display.println(analogRead(D_POT));
     display.print("P: ");
@@ -104,7 +104,7 @@ void turn_wheels(int g, int speed)
     }
 }
 
-void drive(int speed)
+void drive()
 {
     int left_reading = analogRead(LEFT_TAPE_SENSOR);
 
@@ -113,8 +113,8 @@ void drive(int speed)
     // int kp = analogRead(P_POT) * 10;
     int kp = 16 * 10;
     int kd = analogRead(D_POT) * 10;
-    int ki = analogRead(I_POT) * 10;
-    robot_speed = 2200;
+    int ki = 35 * 10;
+    robot_speed = CRUISING_SPEED;
 
     //Finds error based on inputs from sensors
     if (left_reading > BW_THRES && right_reading > BW_THRES)
@@ -161,9 +161,9 @@ void drive(int speed)
     {
         g = g * -1;
     }
-    if (g > speed)
+    if (g > G_THRESHOLD)
     {
-        g = speed;
+        g = G_THRESHOLD;
     }
     turn_wheels(g, robot_speed);
     
@@ -183,9 +183,13 @@ void drive(int speed)
 
 bool search()
 {
-    if (at_dropoff)
+    if (analogRead(DROPOFF_SENSOR) < DROPOFF_THRESHOLD)
     {
+        at_dropoff = true;
+        // stop flapper
         pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        // open reservoir
+        pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         return true;
     }
 
@@ -217,7 +221,7 @@ bool search()
             delay(60);
             last_tick = millis();
         }
-        drive(CRUISING_SPEED);
+        drive();
     
         // start flapper
         pwm_start(FLAPPER_MOTOR, SERVO_FREQ, FLAPPER_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
@@ -277,13 +281,6 @@ bool store_can()
     //delay(500);
 
     num++;
-    if (num % 3 == 0)
-    {
-        pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        delay(1000);
-        pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        delay(1000);
-    }
     reservoir_state = num % 3;
     return true;
 }
@@ -308,21 +305,12 @@ bool reset_claw()
 
 bool stop_drop_roll()
 {
-    // check that the robot is in line with the return vehicle, i.e. the front sensor has just left
-    // the tape that is along the side of the return vehicle
-    drive(DROPOFF_SPEED);
-    if (digitalRead(FRONT_DROPOFF_SENSOR) == 0)
-    {
-        // stop wheels
-        pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, TimerCompareFormat_t::RESOLUTION_16B_COMPARE_FORMAT);
-        delay(50);
-        pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        delay(1000);
-
+    drive();
+    if (analogRead(DROPOFF_SENSOR) > 100)
+    {        
         pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+        at_dropoff = false;
+        reservoir_state = 0;
         return true;
     }
     return false;
@@ -397,9 +385,4 @@ void check_state()
         break;
     }
     display.display();
-}
-
-void handle_interrupt()
-{
-    // at_dropoff = true;
 }
