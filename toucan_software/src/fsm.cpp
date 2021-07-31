@@ -40,8 +40,6 @@ void display_values(int left_input, int right_input)
     display.println(robot_speed);
     display.print("kp: ");
     display.print(analogRead(P_POT));
-    display.print(" ki: ");
-    //display.print(analogRead(I_POT));
     display.print(0);
     display.print(" kd: ");
     display.println(analogRead(D_POT));
@@ -108,13 +106,11 @@ void turn_wheels(int g, int speed)
 void drive(int speed)
 {
     int left_reading = analogRead(LEFT_TAPE_SENSOR);
-
     int right_reading = analogRead(RIGHT_TAPE_SENSOR);
 
     int kp = analogRead(P_POT) * 10;
     int kd = analogRead(D_POT) * 10;
-    int ki = 350;
-    // int ki = 0;
+    int ki = 35 * 10;
     robot_speed = CRUISING_SPEED;
 
     //Finds error based on inputs from sensors
@@ -366,8 +362,6 @@ void check_state()
         break;
 
     case STOP_DROP_ROLL:
-        // has aligned to the return vehicle
-        // drive forwards slowly to drop cans, sense when the robot has reached the end of the return vehicle
         if (stop_drop_roll())
         {
             state = SEARCH;
