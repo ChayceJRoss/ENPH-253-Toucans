@@ -326,6 +326,7 @@ void check_state()
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
         if (reset_claw())
         {
+            // don't start until skycrane has released the robot
             while (true)
             {
                 if (analogRead(LEFT_TAPE_SENSOR) > BW_THRES && analogRead(RIGHT_TAPE_SENSOR) > BW_THRES)
