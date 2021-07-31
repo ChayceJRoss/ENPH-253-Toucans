@@ -87,7 +87,7 @@ void turn_wheels(int g, int speed)
     }
 }
 
-void drive(int speed)
+void drive()
 {
     int left_reading = analogRead(LEFT_TAPE_SENSOR);
 
@@ -99,7 +99,7 @@ void drive(int speed)
     int kp = 140;
     int kd = 200;
     // int ki = 250;
-    robot_speed = 1600;
+    robot_speed = CRUISING_SPEED;
 
     // Finds error based on inputs from sensors
     if (left_reading > BW_THRES && right_reading > BW_THRES)
@@ -147,9 +147,9 @@ void drive(int speed)
     {
         g = g * -1;
     }
-    if (g > speed)
+    if (g > G_THRESHOLD)
     {
-        g = speed;
+        g = G_THRESHOLD;
     }
     turn_wheels(g, robot_speed);
 
@@ -171,16 +171,11 @@ void drive(int speed)
 
 bool search()
 {
-    if (analogRead(DROPOFF_SENSOR) < 100)
+    if (analogRead(DROPOFF_SENSOR) < DROPOFF_THRESHOLD)
     {
         at_dropoff = true;
         // stop flapper
         pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        // stop wheels
-        pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
         // open reservoir
         pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
@@ -216,7 +211,7 @@ bool search()
             delay(60);
             last_hiccup = millis();
         }
-        drive(CRUISING_SPEED);
+        drive();
         // start flapper
         pwm_start(FLAPPER_MOTOR, SERVO_FREQ, FLAPPER_SPEED, RESOLUTION_12B_COMPARE_FORMAT);
     }
@@ -300,7 +295,7 @@ bool reset_claw()
 
 bool stop_drop_roll()
 {
-    drive(CRUISING_SPEED);
+    drive();
     if (analogRead(DROPOFF_SENSOR) > DROPOFF_THRESHOLD)
     {
         pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
@@ -331,6 +326,14 @@ void check_state()
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
         if (reset_claw())
         {
+            while (true)
+            {
+                if (analogRead(LEFT_TAPE_SENSOR) > BW_THRES && analogRead(RIGHT_TAPE_SENSOR) > BW_THRES)
+                {
+                    delay(1500);
+                    break;
+                }
+            }
             pwm_start(LEFT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(RIGHT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
