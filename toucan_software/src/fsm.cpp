@@ -112,7 +112,7 @@ void drive()
     
     // int kp = analogRead(P_POT) * 10;
     int kp = 16 * 10;
-    int kd = analogRead(D_POT) * 10;
+    int kd = 16 * 10;
     int ki = 35 * 10;
     robot_speed = CRUISING_SPEED;
 
