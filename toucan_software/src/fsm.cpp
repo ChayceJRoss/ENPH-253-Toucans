@@ -327,8 +327,9 @@ void check_state()
     case INITIALIZE:
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
         // delay(10000);
-        if (reset_claw())
+        if (analogRead(LEFT_TAPE_SENSOR) > BW_THRES && analogRead(RIGHT_TAPE_SENSOR) > BW_THRES)
         {
+            delay(1500);
             pwm_start(LEFT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(RIGHT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);

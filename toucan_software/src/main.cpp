@@ -37,6 +37,7 @@ void setup()
   // skycrane sequence?
   init_pins();
   set_up_display();
+  reset_claw();
 }
 
 void loop()
