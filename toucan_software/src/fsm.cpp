@@ -114,6 +114,7 @@ void drive()
     int kp = 16 * 10;
     int kd = 16 * 10;
     int ki = 35 * 10;
+    // int ki = 0;
     robot_speed = CRUISING_SPEED;
 
     //Finds error based on inputs from sensors

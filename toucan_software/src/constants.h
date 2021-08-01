@@ -28,7 +28,7 @@ const int MAX_INTEGRATOR_VALUE = 100;
 
 const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
-const int CRUISING_SPEED = 2150;
+const int CRUISING_SPEED = 2000;
 const int G_THRESHOLD = 1000; // original threshold: 1600
 // flapper speed 800
 const int FLAPPER_SPEED = 750;
