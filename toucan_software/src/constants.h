@@ -28,7 +28,7 @@ const int MAX_INTEGRATOR_VALUE = 100;
 
 const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
-const int CRUISING_SPEED = 2000;
+const int CRUISING_SPEED = 2250;
 const int G_THRESHOLD = 1000; // original threshold: 1600
 // flapper speed 800
 const int FLAPPER_SPEED = 750;
@@ -42,7 +42,7 @@ const int CLAW_OPEN = 950;
 const int ARM_DOWN = 500;
 // blake 1550
 const int ARM_UP = 1550;
-const int SWIVEL_ORIGIN = 2500;
+const int SWIVEL_ORIGIN = 2350;
 // blake {925, 1150, 1500}, tara {900, 1200, 1500}, brian {1150, 1450, 1800}, default 1000 1300 1600
 const int RESERVOIR_POSITIONS[3] = {925, 1150, 1500};
 const int RESERVOIR_OPEN = 1000;
