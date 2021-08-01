@@ -329,7 +329,7 @@ void check_state()
         // delay(10000);
         if (analogRead(LEFT_TAPE_SENSOR) > BW_THRES && analogRead(RIGHT_TAPE_SENSOR) > BW_THRES)
         {
-            delay(1500);
+            delay(3000);
             pwm_start(LEFT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(RIGHT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
