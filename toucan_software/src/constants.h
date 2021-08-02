@@ -28,7 +28,7 @@ const int MAX_INTEGRATOR_VALUE = 100;
 
 const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
-const int CRUISING_SPEED = 2250;
+const int CRUISING_SPEED = 2275;
 const int G_THRESHOLD = 1000; // original threshold: 1600
 // flapper speed 800
 const int FLAPPER_SPEED = 750;
@@ -37,8 +37,8 @@ const int HICCUP = 650;
 // Servo Position
 // MIN 500, MAX 2500
 // blake - 690, brian - 720, tara = 750
-const int CLAW_CLOSE = 650;
-const int CLAW_OPEN = 950;
+const int CLAW_CLOSE = 620;
+const int CLAW_OPEN = 920;
 const int ARM_DOWN = 500;
 // blake 1550
 const int ARM_UP = 1550;

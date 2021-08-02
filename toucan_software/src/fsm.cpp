@@ -106,8 +106,8 @@ void drive()
     // int kp = analogRead(P_POT) * 10;
     int kp = 16 * 10;
     int kd = 16 * 10;
-    int ki = 35 * 10;
-    // int ki = 0;
+    //int ki = 35 * 10;
+    int ki = 0;
     robot_speed = CRUISING_SPEED;
 
     //Finds error based on inputs from sensors
@@ -297,6 +297,10 @@ bool reset_claw()
     return true;
 }
 
+volatile bool just_reached_dropoff = true;
+volatile bool start_time = true;
+volatile int time;
+
 bool stop_drop_roll()
 {
     drive();
@@ -305,7 +309,25 @@ bool stop_drop_roll()
         pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         at_dropoff = false;
         reservoir_state = 0;
+        just_reached_dropoff = true;
         return true;
+    }
+    if (start_time)
+    {
+        time = millis();
+        start_time = false;
+    }
+    if (just_reached_dropoff)
+    {
+        if (millis() - time > 1000)
+        {
+            pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(LEFT_WHEEL_B, DC_FREQ, 2000, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_B, DC_FREQ, 2000, RESOLUTION_12B_COMPARE_FORMAT);        
+            delay(500);
+            just_reached_dropoff = false;    
+        }
     }
     return false;
 }
