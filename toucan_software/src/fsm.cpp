@@ -5,6 +5,7 @@ volatile int init_time_sensed = 0;
 volatile int reservoir_state = 0;
 
 volatile bool at_dropoff = false;
+volatile bool just_reached_dropoff = true;
 volatile int reflectance;
 
 volatile int p = 0;
@@ -74,13 +75,15 @@ void turn_wheels(int g, int speed)
         pwm_start(LEFT_WHEEL_A, DC_FREQ, speed + g, RESOLUTION_12B_COMPARE_FORMAT);
         pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
-        pwm_start(RIGHT_WHEEL_A, DC_FREQ, (speed - g) * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_B, DC_FREQ, g * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
+        // pwm_start(RIGHT_WHEEL_B, DC_FREQ, g * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
     }
     else if (error > 0)
     {
-        pwm_start(LEFT_WHEEL_A, DC_FREQ, speed - g, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_B, DC_FREQ, g, RESOLUTION_12B_COMPARE_FORMAT);
+        // pwm_start(LEFT_WHEEL_B, DC_FREQ, g, RESOLUTION_12B_COMPARE_FORMAT);
 
         pwm_start(RIGHT_WHEEL_A, DC_FREQ, (speed + g) * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
         pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
@@ -97,7 +100,7 @@ void drive()
     // int kd = analogRead(D_POT) * 10;
     // int ki = analogRead(I_POT) * 10;
     int kp = 140;
-    int kd = 200;
+    int kd = 210;
     // int ki = 250;
     robot_speed = CRUISING_SPEED;
 
@@ -293,6 +296,9 @@ bool reset_claw()
     return true;
 }
 
+volatile bool start_time = true;
+volatile int time;
+
 bool stop_drop_roll()
 {
     drive();
@@ -301,7 +307,25 @@ bool stop_drop_roll()
         pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         at_dropoff = false;
         reservoir_state = 0;
+        just_reached_dropoff = true;
         return true;
+    }
+    if (start_time)
+    {
+        time = millis();
+        start_time = false;
+    }
+    if (just_reached_dropoff)
+    {
+        if (millis() - time > 1000)
+        {
+        pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_B, DC_FREQ, 2000, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 2000, RESOLUTION_12B_COMPARE_FORMAT);
+        delay(500);
+        just_reached_dropoff = false;
+        }
     }
     return false;
 }
@@ -319,22 +343,16 @@ void check_state()
     display.println(state);
     display.print("dropoff sensor: ");
     display.println(analogRead(DROPOFF_SENSOR));
+    display.println(analogRead(RIGHT_TAPE_SENSOR));
+    display.println(analogRead(LEFT_TAPE_SENSOR));
 
     switch (state)
     {
     case INITIALIZE:
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
-        if (reset_claw())
+        if (analogRead(LEFT_TAPE_SENSOR) > BW_THRES && analogRead(RIGHT_TAPE_SENSOR) > BW_THRES && analogRead(LEFT_TAPE_SENSOR) < 750 && analogRead(RIGHT_TAPE_SENSOR) < 750)
         {
-            // don't start until skycrane has released the robot
-            while (true)
-            {
-                if (analogRead(LEFT_TAPE_SENSOR) > BW_THRES && analogRead(RIGHT_TAPE_SENSOR) > BW_THRES)
-                {
-                    delay(1500);
-                    break;
-                }
-            }
+            delay(3000);
             pwm_start(LEFT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(RIGHT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
