@@ -223,7 +223,7 @@ bool search()
 
 bool store_can()
 {
-    delay(500);
+    delay(250);
     for (int i = ARM_DOWN; i < ARM_UP; i += 25)
     {
         pwm_start(ARM_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
@@ -231,7 +231,7 @@ bool store_can()
     }
 
     pwm_start(FLAPPER_MOTOR, SERVO_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-    delay(800);
+    delay(100);
 
     for (int i = SWIVEL_ORIGIN; i > RESERVOIR_POSITIONS[reservoir_state]; i -= 50)
     {
@@ -239,7 +239,7 @@ bool store_can()
         delay(30);
     }
 
-    delay(800);
+    delay(800 - 200*reservoir_state);
 
     for (int i = CLAW_CLOSE; i < CLAW_OPEN; i += 25)
     {
@@ -254,11 +254,10 @@ bool store_can()
         pwm_start(SWIVEL_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         delay(15);
     }
-    delay(800);
 
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
-    delay(500);
+    delay(250);
 
     for (int i = ARM_UP; i > ARM_DOWN; i -= 25)
     {
@@ -352,7 +351,7 @@ void check_state()
         // start-up sequence / waiting for the robot to touch ground, use tape sensors for this
         if (analogRead(LEFT_TAPE_SENSOR) > BW_THRES && analogRead(RIGHT_TAPE_SENSOR) > BW_THRES && analogRead(LEFT_TAPE_SENSOR) < 750 && analogRead(RIGHT_TAPE_SENSOR) < 750)
         {
-            delay(3000);
+            delay(4000);
             pwm_start(LEFT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(RIGHT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
