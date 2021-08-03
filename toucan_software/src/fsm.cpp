@@ -75,14 +75,12 @@ void turn_wheels(int g, int speed)
         pwm_start(LEFT_WHEEL_A, DC_FREQ, speed + g, RESOLUTION_12B_COMPARE_FORMAT);
         pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
 
-        pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, DC_FREQ, g * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(RIGHT_WHEEL_A, DC_FREQ, speed - g, RESOLUTION_12B_COMPARE_FORMAT);
         // pwm_start(RIGHT_WHEEL_B, DC_FREQ, g * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
     }
     else if (error > 0)
     {
-        pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, DC_FREQ, g, RESOLUTION_12B_COMPARE_FORMAT);
+        pwm_start(LEFT_WHEEL_A, DC_FREQ, speed - g, RESOLUTION_12B_COMPARE_FORMAT);
         // pwm_start(LEFT_WHEEL_B, DC_FREQ, g, RESOLUTION_12B_COMPARE_FORMAT);
 
         pwm_start(RIGHT_WHEEL_A, DC_FREQ, (speed + g) * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
@@ -239,13 +237,13 @@ bool store_can()
         delay(30);
     }
 
-    delay(800 - 200*reservoir_state);
-    if (reservoir_state == 1)
+    delay(400);
+    if (reservoir_state == 0 || reservoir_state == 1)
     {
-        delay(200);
+        delay(300);
     }
 
-    for (int i = CLAW_CLOSE; i < CLAW_OPEN; i += 25)
+    for (int i = CLAW_CLOSE; i < 875; i += 25)
     {
         pwm_start(CLAW_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         delay(15);
@@ -256,14 +254,14 @@ bool store_can()
     for (int i = RESERVOIR_POSITIONS[reservoir_state]; i < SWIVEL_ORIGIN; i += 50)
     {
         pwm_start(SWIVEL_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-        delay(15);
+        delay(5);
     }
 
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
     delay(250);
 
-    for (int i = ARM_UP; i > ARM_DOWN; i -= 25)
+    for (int i = ARM_UP; i > ARM_DOWN; i -= 50)
     {
         pwm_start(ARM_SERVO, SERVO_FREQ, i, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         delay(15);
@@ -271,10 +269,9 @@ bool store_can()
 
     delay(100);
 
-    pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
-    delay(50);
     // only for blakes robot
-    // pwm_start(SWIVEL_SERVO, SERVO_FREQ, 2300, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    pwm_start(SWIVEL_SERVO, SERVO_FREQ, 2450, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
     num++;
     reservoir_state = num % 3;
@@ -294,7 +291,7 @@ bool reset_claw()
     pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     delay(50);
     // Only need this for blakes robot
-    // pwm_start(SWIVEL_SERVO, SERVO_FREQ, 2300, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
+    pwm_start(SWIVEL_SERVO, SERVO_FREQ, 2450, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     // delay(1000);
     return true;
 }
@@ -310,7 +307,9 @@ bool stop_drop_roll()
         pwm_start(RESERVOIR_SERVO, SERVO_FREQ, RESERVOIR_CLOSE, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
         at_dropoff = false;
         reservoir_state = 0;
-        just_reached_dropoff = true;
+        num = 0;
+        // just_reached_dropoff = true;
+        // start_time = true;
         return true;
     }
     if (start_time)
@@ -383,9 +382,9 @@ void check_state()
         // store can -> search
         if (store_can())
         {
-            pwm_start(LEFT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(LEFT_WHEEL_A, DC_FREQ, 2500, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-            pwm_start(RIGHT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_A, DC_FREQ, 2500, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             delay(50);
             state = SEARCH;

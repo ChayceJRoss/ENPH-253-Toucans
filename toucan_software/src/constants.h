@@ -31,7 +31,7 @@ const int MAX_INTEGRATOR_VALUE = 100;
 
 const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
-const int CRUISING_SPEED = 1880;
+const int CRUISING_SPEED = 1775;
 const int G_THRESHOLD = 1000;
 // const int DROPOFF_SPEED = 1000;
 const int FLAPPER_SPEED = 550; 
