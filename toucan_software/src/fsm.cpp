@@ -240,6 +240,10 @@ bool store_can()
     }
 
     delay(800 - 200*reservoir_state);
+    if (reservoir_state == 1)
+    {
+        delay(200);
+    }
 
     for (int i = CLAW_CLOSE; i < CLAW_OPEN; i += 25)
     {
@@ -318,12 +322,12 @@ bool stop_drop_roll()
     {
         if (millis() - time > 1000)
         {
-        pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(LEFT_WHEEL_B, DC_FREQ, 2000, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-        pwm_start(RIGHT_WHEEL_B, DC_FREQ, 2000, RESOLUTION_12B_COMPARE_FORMAT);
-        delay(500);
-        just_reached_dropoff = false;
+            pwm_start(LEFT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(LEFT_WHEEL_B, DC_FREQ, 2500, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_A, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_B, DC_FREQ, 2500, RESOLUTION_12B_COMPARE_FORMAT);
+            delay(500);
+            just_reached_dropoff = false;
         }
     }
     return false;
@@ -354,7 +358,7 @@ void check_state()
             delay(4000);
             pwm_start(LEFT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
-            pwm_start(RIGHT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_A, DC_FREQ, 3000 * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             delay(50);
             state = SEARCH;
@@ -389,8 +393,6 @@ void check_state()
         break;
 
     case STOP_DROP_ROLL:
-        // has aligned to the return vehicle
-        // drive forwards slowly to drop cans, sense when the robot has reached the end of the return vehicle
         if (stop_drop_roll())
         {
             state = SEARCH;
