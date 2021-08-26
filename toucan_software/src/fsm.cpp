@@ -19,7 +19,7 @@ volatile int m = 1; // Elapsed time in previous state
 volatile int n = 0; // Elapsed time in current state
 volatile int init_time = 0;
 volatile int num = 0;
-volatile int last_hiccup = 0; // Elapsed time from previous hiccup
+volatile int last_hiccup; // Elapsed time from previous hiccup
 
 volatile int robot_speed;
 
@@ -269,12 +269,13 @@ bool store_can()
 
     delay(100);
 
-    // only for blakes robot
+    // only for taras robot
     pwm_start(SWIVEL_SERVO, SERVO_FREQ, 2450, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
     pwm_start(CLAW_SERVO, SERVO_FREQ, CLAW_OPEN, TimerCompareFormat_t::MICROSEC_COMPARE_FORMAT);
 
     num++;
     reservoir_state = num % 3;
+    last_hiccup = millis();
     return true;
 }
 
@@ -327,6 +328,11 @@ bool stop_drop_roll()
             pwm_start(RIGHT_WHEEL_B, DC_FREQ, 2500, RESOLUTION_12B_COMPARE_FORMAT);
             delay(500);
             just_reached_dropoff = false;
+            pwm_start(LEFT_WHEEL_A, DC_FREQ, 3000, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(LEFT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_A, DC_FREQ, 3000 * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
+            pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
+            delay(50);
         }
     }
     return false;
@@ -360,6 +366,7 @@ void check_state()
             pwm_start(RIGHT_WHEEL_A, DC_FREQ, 3000 * RW_ADJUSTMENT_FACTOR, RESOLUTION_12B_COMPARE_FORMAT);
             pwm_start(RIGHT_WHEEL_B, DC_FREQ, 0, RESOLUTION_12B_COMPARE_FORMAT);
             delay(50);
+            last_hiccup = millis();
             state = SEARCH;
         }
         break;

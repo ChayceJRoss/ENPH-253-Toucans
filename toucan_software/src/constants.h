@@ -31,7 +31,7 @@ const int MAX_INTEGRATOR_VALUE = 100;
 
 const int SERVO_FREQ = 50;
 const int DC_FREQ = 1000;
-const int CRUISING_SPEED = 1775;
+const int CRUISING_SPEED = 1750; // was 1775
 const int G_THRESHOLD = 1000;
 // const int DROPOFF_SPEED = 1000;
 const int FLAPPER_SPEED = 550; 
@@ -50,13 +50,13 @@ const int SWIVEL_ORIGIN = 2500;
 // blake - bluecan {950. 1150. 1500}, default 1000 1300 1600
 // brian - toucan too many {1150, 1450, 1800}
 // tara - mr roboto {1300, 1650, 1950}
-const int RESERVOIR_POSITIONS[3] = {1285, 1635, 1935};
+const int RESERVOIR_POSITIONS[3] = {1255, 1615, 1935};
 const int RESERVOIR_OPEN = 1000;
 const int RESERVOIR_CLOSE = 500;
 
 const int CAN_SENSING_THRESHOLD = 300;
 const int DROPOFF_THRESHOLD = 100;
-const int BW_THRES = 100; // Black > 100, White < 100 approx
+const int BW_THRES = 150; // Black > 100, White < 100 approx
 
 // display set-up
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
